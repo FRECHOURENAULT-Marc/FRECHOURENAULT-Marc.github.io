@@ -1,29 +1,117 @@
-.flag 
+
+/* CONTAINER */
+
+.container-center-row
+{
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     gap: 20px;
+}
+
+.container-center-row img
 {
     max-width: 200px;
     max-height: 100px;
 }
 
-.container-center 
+/* TEXT */
+
+h1 
+{
+    font-size: 80px;
+    font-family: "Title", sans-serif;
+    font-weight: bold;
+    color:#fd6c72;
+    margin: 30px;
+}
+
+h2
+{
+    font-size: 50px;
+    font-family: "Title", sans-serif;
+    font-weight: bold;
+    color:#280f92;
+    margin: 20px;
+}
+
+p
+{
+    font-size: 20px;
+    font-family: "Text", sans-serif;
+    color:#280f92;
+    margin: 5px;
+}
+
+/* GLOBAL */
+
+.page 
 {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    gap : 10px;
+    gap: 0px;
+}
+
+.footer {
+    margin-top: auto;
+    padding: 16px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.background 
+{
+    background :white;
+    min-height: 55vh;
+    
+    display: grid;
+    place-items: center;
+    align-items: start;
+
+    border: 2px solid #ffffff;
+    border-radius: 20px;
+    margin: 100px;
+    box-shadow: 5px 3px 20px black;
+
+    padding-top: 50px;
+    padding-bottom: 50px;
 }
 
 html 
 {
-    background-image: linear-gradient(
-        to bottom, rgb(0, 0, 170), 10%, 
-        black, 90%, 
-        rgb(0, 0, 170));
+    background: #ff1fcb;
+    background: linear-gradient(135deg, rgba(255, 31, 203, 1) 0%, rgba(255, 217, 196, 1) 50%, rgba(80, 31, 255, 1) 100%);
     background-attachment: fixed;
     background-repeat: no-repeat;
 }
-img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+
+/* CUSTOM FONT */
+
+@font-face {
+    font-family: "Title";
+    src: url("../res/CyGroteskWide-Light.woff2") format("woff2"),
+        url("../res/CyGroteskWide-Light.woff") format("woff");
+    font-weight: normal;
+}
+@font-face {
+    font-family: "Title";
+    src: url("../res/CyGroteskWide-Bold.woff2") format("woff2"),
+        url("../res/CyGroteskWide-Bold.woff") format("woff");
+    font-weight: bold;
+}
+@font-face {
+    font-family: "Text";
+    src: url("../res/Agrandir-Regular.woff2") format("woff2"),
+        url("../res/Agrandir-Regular.woff") format("woff");
+    font-weight: normal;
+}
+@font-face {
+    font-family: "Text";
+    src: url("../res/Agrandir-TextBold.woff2") format("woff2"),
+        url("../res/Agrandir-TextBold.woff") format("woff");
+    font-weight: bold;
 }
 
