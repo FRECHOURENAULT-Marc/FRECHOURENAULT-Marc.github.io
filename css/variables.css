@@ -1,0 +1,55 @@
+:root 
+{
+  --text-color: #280f92;
+}
+
+/* Mobile */
+@media (max-width: 1024px) 
+{
+:root 
+{
+  --flag-height: 100px;
+  --flag-width: 200px;
+
+  --h1-size: 55px;
+  --h1-margin: 20px;
+  --h2-size: 35px;
+
+  --double-container-direction: column;
+  --double-container-gap: 20px;
+  --double-container-subcontainer-width: 300px;
+
+  --menu-gap: 10px;
+  --menu-padding-x: 0px;
+  --menu-center: center;
+  --background-height: 75vh;
+  --background-margin: 0px;
+  --background-padding: 20px;
+}
+}
+
+/* Laptop */
+@media (min-width: 1024px)
+{
+:root 
+{
+
+  --flag-height: 75px;
+  --flag-width: 150px;
+
+  --h1-size: 80px;
+  --h1-margin: 30px;
+  --h2-size: 50px;
+
+  --double-container-direction: row;
+  --double-container-gap: 50px;
+  --double-container-subcontainer-width: 400px;
+
+  --menu-gap: 30px;
+  --menu-padding-x: 30px;
+  --menu-center: none;
+  --background-height: 55vh;
+  --background-margin: 100px;
+  --background-padding: 50px;
+}
+}
