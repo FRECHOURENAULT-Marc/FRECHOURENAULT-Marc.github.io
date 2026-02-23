@@ -25,6 +25,25 @@
   }
 }
 
+@keyframes show-trans 
+{
+  0% {
+  opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes hide-trans
+{
+  0% {
+  opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 .disappear 
 {
   animation: disappear 1s;
@@ -32,4 +51,12 @@
 .appear 
 {
   animation: appear 1s forwards;
+}
+.show 
+{
+  animation: show-trans 1s forwards;
+}
+.hide 
+{
+  animation: hide-trans 1s forwards;
 }
