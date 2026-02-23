@@ -24,3 +24,12 @@
     opacity: 1;
   }
 }
+
+.disappear 
+{
+  animation: disappear 1s;
+}
+.appear 
+{
+  animation: appear 1s forwards;
+}

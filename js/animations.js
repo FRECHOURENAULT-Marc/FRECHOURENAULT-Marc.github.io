@@ -1,32 +1,42 @@
-
-document.addEventListener('DOMContentLoaded', 
-function() 
+document.addEventListener('DOMContentLoaded', () => 
 {
-  page_back = document.getElementsByClassName('page-background')[0];
-  page_back.style.animation = 'appear 1s forwards';
+  window.addEventListener('pageshow', () => 
+  { 
+    const page_back = document.getElementsByClassName('page-background')[0];
+    page_back.classList.add('appear');
 
-  disappear = (e) => 
-  {
-    let link = e.target;
-    while (link && link.tagName !== 'A') {
-    link = link.parentElement;
-    }
+    document.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', function(e) 
+    {
+      e.preventDefault();
+      page_back.classList.remove('appear');
+      page_back.classList.add('disappear');
+      setTimeout(() => 
+      { 
+        window.location.href = this.href; 
+      }, 500);
+    });
+  })
+});
 
-    if(!link) return;
-
-    handler = () => {
-      page_back.style.animation = 'appear 1s forwards';
-      window.location.href = link.href; 
-    };
-    setTimeout(handler, 250);
-    e.preventDefault();
-    page_back.style.animation = 'disappear 1s ease-out';
-  }
   
-  document.addEventListener('click', disappear);
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
-}
-);
+});
   
   
   
