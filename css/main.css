@@ -5,13 +5,15 @@
 ### CONTAINER 
 ################## */
 
-.container-center-row
+.ico 
 {
-     display: flex;
-     flex-direction: row;
-     justify-content: center;
-     align-items: center;
-     gap: 20px;
+  max-width: var(--ico-width);
+  max-height: var(--ico-height);
+}
+img 
+{
+  border-radius: 10px;
+  max-width: 100%;
 }
 .flag img
 {
@@ -24,7 +26,32 @@
   max-height: var(--flag-height);
 }
 
+.container-center-row
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.container-center-row-independant
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
 .container-center-col
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.container-center-col-independant
 {
   display: flex;
   flex-direction: column;

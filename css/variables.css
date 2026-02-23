@@ -8,10 +8,13 @@
 {
 :root 
 {
+
+  --ico-height: 35px;
+  --ico-width: 35px;
   --flag-height: 100px;
   --flag-width: 200px;
 
-  --h1-size: 55px;
+  --h1-size: 50px;
   --h1-margin: 20px;
   --h2-size: 35px;
 
@@ -34,6 +37,8 @@
 :root 
 {
 
+  --ico-height: 35px;
+  --ico-width: 35px;
   --flag-height: 75px;
   --flag-width: 150px;
 
