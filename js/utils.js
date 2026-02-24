@@ -1,34 +1,50 @@
-document.addEventListener('DOMContentLoaded', () => 
+class Popup
 {
-  const popup = document.createElement('p');
-  popup.className = 'pop-up';
-  const popupBack = document.createElement('div');
-  popupBack.className = 'pop-up-back';
-  popupBack.appendChild(popup);
-  document.body.appendChild(popupBack);
+  #popup;
+  #p;
+  #bar;
+  constructor(text)
+  {
+    this.#popup = document.createElement('div');
+    this.#popup.className = 'pop-up';
+    this.#popup.style.opacity = '0';
+    this.#p = document.createElement('p')
+    this.#popup.appendChild(this.#p);
+    this.#bar = document.createElement('div');
+    this.#bar.className = 'pop-up-bar';
+    this.#popup.appendChild(this.#bar);
+    document.body.appendChild(this.#popup);
 
-  popupBack.style.opacity = '0';
-  popup.style.opacity = '0';
+    this.#ShowText(text);
+  }
+  #destructor() 
+  {
+    this.#popup.remove();
+    this.#p.remove();
+    this.#bar.remove();
+    delete(this);
+  }
+  #ShowText(text) 
+  {
+    this.#popup.classList.remove("hide"); 
+    this.#popup.classList.add("show");
+  
+    this.#bar.style.transform = 'scaleX(1)';
+    this.#bar.classList.add("unscale-x");
 
-  ShowPopup("Test");
-});
-function ShowPopup(text) 
-{
-  const popupBack = document.getElementsByClassName('pop-up-back')[0];
-  const popup = document.getElementsByClassName('pop-up')[0];
+    this.#p.textContent = text;
 
-  popup.classList.add("show");
-  popupBack.classList.add("show");
-
-  popup.textContent = text;
-
-  setTimeout(() => 
-  { 
-    popupBack.classList.add("hide"); 
-    popup.classList.add("hide"); 
-    popupBack.classList.remove("show"); 
-    popup.classList.remove("show"); 
-  }, 2000);
+    setTimeout(() => 
+    {
+      this.#popup.classList.add("hide"); 
+      this.#popup.classList.remove("show"); 
+      setTimeout(() => 
+      { 
+        this.#bar.classList.remove("unscale-x"); 
+        this.#destructor();
+      }, 1000);
+    }, 2000);
+  }
 }
 
 // COPY TO CLIPBOARDs
@@ -40,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () =>
    element.addEventListener("click", function () 
    {
       navigator.clipboard.writeText(element.textContent)
-      alert("Copié !");
+      new Popup(`"${element.textContent}" copié dans le presse papier !`);
    });
   })                                                    
 });
