@@ -8,24 +8,28 @@
 {
 :root 
 {
-
   --ico-height: 35px;
   --ico-width: 35px;
   --flag-height: 100px;
   --flag-width: 200px;
 
-  --h1-size: 50px;
-  --h1-margin: 20px;
-  --h2-size: 35px;
+  --h1-size: calc(40px + 1vw);
+  --h1-margin: 10px;
+  --h2-size: calc(25px + 1vw);
+  --h2-margin: 5px;
+  --p-size: calc(15px + 1vw);
 
+  --container-gap: 10px;
   --double-container-direction: column;
+  --double-container-margin: 10px;
   --double-container-gap: 20px;
-  --double-container-subcontainer-width: 300px;
+  --double-container-subcontainer-shadow: 5px 3px 20px rgba(0, 0, 0, 0.1);
+  --double-container-subcontainer-width: 75vw;
 
-  --menu-gap: 10px;
+  --menu-gap: 0px;
   --menu-padding-x: 0px;
   --menu-center: center;
-  --background-height: 75vh;
+  --background-height: 80vh;
   --background-margin: 0px;
   --background-padding: 20px;
 }
@@ -43,12 +47,17 @@
   --flag-width: 150px;
 
   --h1-size: 80px;
-  --h1-margin: 30px;
+  --h1-margin: 15px;
   --h2-size: 50px;
+  --h2-margin: 10px;
+  --p-size: 20px;
 
+  --container-gap: 10px;
   --double-container-direction: row;
+  --double-container-margin: 30px;
   --double-container-gap: 50px;
-  --double-container-subcontainer-width: 400px;
+  --double-container-subcontainer-shadow: 5px 3px 20px rgba(0, 0, 0, 0.1);
+  --double-container-subcontainer-width: 30vw;
 
   --menu-gap: 30px;
   --menu-padding-x: 30px;

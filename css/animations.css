@@ -1,3 +1,22 @@
+@keyframes hover-shadow
+{
+  0% {
+    box-shadow: 5px 3px 20px rgba(0, 0, 0, 0.1);
+  }
+  100% {
+    box-shadow: 5px 3px 20px rgba(0, 0, 0, 0.4);
+  }
+}
+@keyframes unhover-shadow
+{
+  0% {
+    box-shadow: 5px 3px 20px rgba(0, 0, 0, 0.4);
+  }
+  100% {
+    box-shadow: 5px 3px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
 @keyframes disappear
 {
   0% {
@@ -25,6 +44,44 @@
   }
 }
 
+@keyframes show-trans 
+{
+  0% {
+  opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes hide-trans
+{
+  0% {
+  opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes scale-x 
+{
+  0% {
+  transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+@keyframes unscale-x 
+{
+  0% {
+  transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+  }
+}
+
 .disappear 
 {
   animation: disappear 1s;
@@ -32,4 +89,20 @@
 .appear 
 {
   animation: appear 1s forwards;
+}
+.show 
+{
+  animation: show-trans 1s forwards;
+}
+.hide 
+{
+  animation: hide-trans 1s forwards;
+}
+.scale-x
+{
+  animation: scale-x 0s forwards;
+}
+.unscale-x
+{
+  animation: unscale-x 2s forwards;
 }
