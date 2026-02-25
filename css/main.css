@@ -147,7 +147,7 @@ html
 img 
 {
   border-radius: 10px;
-  max-width: 100%;
+  max-width: 300px;
 }
 .flag img
 {
@@ -193,6 +193,16 @@ img
   align-items: center;
   gap: var(--container-gap);
 }
+.shadow,
+.double-container-center .container-center-col, .double-container-center .container-center-row
+{
+  animation: unhover-shadow 0.5s forwards;
+}
+.shadow:hover,
+.double-container-center .container-center-col:hover, .double-container-center .container-center-row:hover
+{
+  animation: hover-shadow 1s forwards;
+}
 
 .double-container-center 
 {
@@ -206,13 +216,9 @@ img
 .double-container-center .container-center-col, .double-container-center .container-center-row { 
   gap: 0px; 
   padding: 10px;
+  max-width: var(--double-container-subcontainer-width);
   border-radius: 20px;
-  box-shadow: var(--double-container-subcontainer-shadow);
-  width: var(--double-container-subcontainer-width);
-  animation: unhover-shadow 0.5s forwards;
-}
-.double-container-center .container-center-col:hover, .double-container-center .container-center-row:hover { 
-  animation: hover-shadow 1s forwards;
+
 }
 
 /* ##################
@@ -250,6 +256,7 @@ img
   box-sizing: border-box;
   border-radius: 5px;
   background-color: white;
+  box-shadow: 5px 3px 20px rgba(0, 0, 0, 0.4);
 
   z-index: 9999; 
 }

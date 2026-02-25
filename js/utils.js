@@ -47,7 +47,7 @@ class Popup
   }
 }
 
-// COPY TO CLIPBOARDs
+// COPY TO CLIPBOARD
 document.addEventListener('DOMContentLoaded', () => 
 {
   const copyButton = document.getElementsByClassName("to-clipboard");
