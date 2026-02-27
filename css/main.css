@@ -102,11 +102,13 @@ a
   text-align: center;
   text-decoration: underline;
   width: 100%;
+  max-width: 100%;
 }
 .footer p
 {
   text-align: center;
   width: 100%;
+  max-width: 100%;
 }
 
 .page-background 
