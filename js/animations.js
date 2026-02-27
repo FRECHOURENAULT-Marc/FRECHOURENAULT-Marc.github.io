@@ -3,14 +3,23 @@ document.addEventListener('DOMContentLoaded', () =>
   window.addEventListener('pageshow', () => 
   { 
     const page_back = document.getElementsByClassName('page-background')[0];
-    page_back.classList.add('appear');
+    const footer = document.getElementsByClassName('footer')[0];
+
+    const elements = [page_back, footer];
+
+    elements.forEach(element => {
+      element.classList.add('appear');
+    });
 
     document.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', function(e) 
       {
         e.preventDefault();
-        page_back.classList.remove('appear');
-        page_back.classList.add('disappear');
+
+        elements.forEach(element => {
+          element.classList.remove('appear');
+          element.classList.add('disappear');
+        });
         setTimeout(() => 
         { 
           window.location.href = this.href; 

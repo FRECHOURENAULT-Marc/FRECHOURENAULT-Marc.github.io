@@ -1,10 +1,8 @@
-class Popup
-{
+class Popup {
   #popup;
   #p;
   #bar;
-  constructor(text)
-  {
+  constructor(text) {
     this.#popup = document.createElement('div');
     this.#popup.className = 'pop-up';
     this.#popup.style.opacity = '0';
@@ -17,30 +15,26 @@ class Popup
 
     this.#ShowText(text);
   }
-  #destructor() 
-  {
+  #destructor() {
     this.#popup.remove();
     this.#p.remove();
     this.#bar.remove();
-    delete(this);
+    delete (this);
   }
-  #ShowText(text) 
-  {
-    this.#popup.classList.remove("hide"); 
+  #ShowText(text) {
+    this.#popup.classList.remove("hide");
     this.#popup.classList.add("show");
-  
+
     this.#bar.style.transform = 'scaleX(1)';
     this.#bar.classList.add("unscale-x");
 
     this.#p.textContent = text;
 
-    setTimeout(() => 
-    {
-      this.#popup.classList.add("hide"); 
-      this.#popup.classList.remove("show"); 
-      setTimeout(() => 
-      { 
-        this.#bar.classList.remove("unscale-x"); 
+    setTimeout(() => {
+      this.#popup.classList.add("hide");
+      this.#popup.classList.remove("show");
+      setTimeout(() => {
+        this.#bar.classList.remove("unscale-x");
         this.#destructor();
       }, 1000);
     }, 2000);
@@ -48,21 +42,25 @@ class Popup
 }
 
 // COPY TO CLIPBOARD
-document.addEventListener('DOMContentLoaded', () => 
-{
-  const copyButton = document.getElementsByClassName("to-clipboard");
-  Array.from(copyButton).forEach(element => 
-  {
-   element.addEventListener("click", function () 
-   {
+document.addEventListener('DOMContentLoaded', () => {
+  const copyButtonFR = document.getElementsByClassName("to-clipboard-fr");
+  Array.from(copyButtonFR).forEach(element => {
+    element.addEventListener("click", function () {
       navigator.clipboard.writeText(element.textContent)
       new Popup(`"${element.textContent}" copié dans le presse papier !`);
-   });
-  })                                                    
+    });
+  })
+
+  const copyButtonEN = document.getElementsByClassName("to-clipboard-en");
+  Array.from(copyButtonEN).forEach(element => {
+    element.addEventListener("click", function () {
+      navigator.clipboard.writeText(element.textContent)
+      new Popup(`"${element.textContent}" copy to clipboard !`);
+    });
+  })
 });
 
-function Download(file, name)
-{
+function Download(file, name) {
   const link = document.createElement("a");
   link.href = file;
   link.download = name;
