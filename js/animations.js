@@ -14,7 +14,11 @@ document.addEventListener('DOMContentLoaded', () =>
     document.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', function(e) 
       {
-        e.preventDefault();
+          e.preventDefault();
+          if (this.classList.contains("no-exit")) {
+              return;
+          }
+            
 
         elements.forEach(element => {
           element.classList.remove('appear');
