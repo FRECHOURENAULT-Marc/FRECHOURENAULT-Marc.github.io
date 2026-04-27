@@ -15,8 +15,9 @@ document.addEventListener('DOMContentLoaded', () =>
       link.addEventListener('click', function(e) 
       {
           e.preventDefault();
-          if (this.classList.contains("no-exit")) {
-              return;
+          if (this.classList.contains("no_exit")) {
+            window.location.href = this.href; 
+            return;
           }
             
 
