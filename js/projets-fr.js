@@ -2,7 +2,7 @@ import { Project } from './utils.js';
 
 document.addEventListener('DOMContentLoaded', () =>
     {
-        let project_usr = new Project("USR : Bananium Rush", "(3semaines)", "../img/gaia_74_illu.png", "fr");
+        let project_usr = new Project("USR : Bananium Rush", "(3semaines)", "../img/USR_illu.png", "fr");
         project_usr.SetID("usr");
         project_usr.AddDesc("USR Bananium Rush est un jeu en temps réel mélangeant gestion et deck building.");
         project_usr.AddDesc("");
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () =>
         project_usr.AddSkill("Équilibrage gameplay");
         project_usr.AddSkill("C++ et .json");
         project_usr.Addlink("https://github.com/FRECHOURENAULT-Marc/Y2-009-USR", "GitHub du projet");
-        project_usr.Addlink("https://", "Démo du jeu");
+        //project_usr.Addlink("https://", "Démo du jeu");
 
         let project_dx12 = new Project("FS-Engine", "(4semaines)", "../img/dx12_illu.png", "fr");
         project_dx12.SetID("dx12");
