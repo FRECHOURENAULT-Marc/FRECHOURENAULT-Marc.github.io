@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () =>
         project_usr.Addlink("https://github.com/FRECHOURENAULT-Marc/Y2-009-USR", "GitHub du projet");
         project_usr.Addlink("https://", "Démo du jeu");
 
-        let project_dx12 = new Project("FS-Engine", "(4semaines)", "../img/gaia_74_illu.png", "fr");
+        let project_dx12 = new Project("FS-Engine", "(4semaines)", "../img/dx12_illu.png", "fr");
         project_dx12.SetID("dx12");
         project_dx12.AddDesc("FS-Engine est un moteur de jeu custom développé en C++ durant 4 semaines.");
         project_dx12.AddDesc("");
@@ -42,8 +42,6 @@ document.addEventListener('DOMContentLoaded', () =>
         project_dx12.AddSkill("DX12");
         project_dx12.AddSkill("Communication carte graphique/processeur");
         project_dx12.Addlink("https://github.com/FRECHOURENAULT-Marc/FS_ENGINE", "GitHub du projet");
-
-        new Project("Test");
-        new Project("Test3");
+        project_dx12.Addlink("https://drive.google.com/file/d/16DoD1IyVg7dhQ0GIz4Z5KTHd863TI9BO/view?usp=sharing", "Démo du moteur");
     }
 );
