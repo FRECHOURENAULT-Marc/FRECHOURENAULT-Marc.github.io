@@ -1,4 +1,4 @@
-class Popup {
+export class Popup {
   #popup;
   #p;
   #bar;
