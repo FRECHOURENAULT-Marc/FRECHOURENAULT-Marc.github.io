@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () =>
   project_usr.AddSkill("Équilibrage gameplay");
   project_usr.AddSkill("C++ et .json");
   project_usr.AddLink("https://github.com/FRECHOURENAULT-Marc/Y2-009-USR", "GitHub du projet");
-  //project_usr.AddLink("https://", "Démo du jeu");
+  project_usr.AddLink("https://drive.google.com/file/d/1CvQ_w99DXO8tUOETqoqkZ6jkdopfFJ4I/view?usp=sharing", "Démo du jeu");
   //DX12
   let project_dx12 = new Project("FS-Engine", "(4semaines)", "../img/dx12_illu.png", "fr");
   project_dx12.SetID("dx12");
