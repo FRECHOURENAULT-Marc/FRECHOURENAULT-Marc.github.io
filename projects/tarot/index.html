@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Compteur Tarot</title>
+    <!-- <link rel="stylesheet" href="css/main.css" /> -->
+    <!-- <link rel="icon" href="res/logo-mfr.png" sizes="64x64" type="image/png"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--<script src="js/animations.js"></script> -->
+</head>
+
+<body>
+  <main>
+
+    <div id="scoreboard">
+      <p id="add_player">Ajouter un joueur</p>
+      <p id="remove_player">Retirer un joueur</p>
+
+      <div id="player_names" style="display: flex; justify-content: space-between;">
+      </div>
+      <div id="player_scores" style="display: flex; justify-content: space-between;"> 
+      </div>
+
+    </div>
+
+    <label for="contract_slider" style="display: block; margin-bottom: 10px; margin-top: 20px;">
+      Contrat : <span id="contract_text"></span>
+    </label>
+    <input id="contract_slider" type="range" min="0" max="3" value="0">
+
+    <label for="oudler_slider" style="display: block; margin-bottom: 10px;">
+      Nombre d'Oudlers : <span id="oudler_text"></span>
+    </label>
+    <input id="oudler_slider" type="range" min="0" max="3" value="0">
+
+    <label for="score_slider" style="display: block; margin-bottom: 10px;">
+      Score de l'attaque : <span id="score_text"></span>
+    </label>
+    <input id="score_slider" type="range" min="0" max="90" step="10" value="0">
+
+    <p id="win_message"></p>
+    <p id="score_message">Déplace le slider pour obtenir un score.</p>
+    <p id="points_output"></p>
+
+    <button id="add_points">Appliquer les points</button>
+    
+  </main> 
+
+  <script>
+    
+    class Player {
+      constructor(name, playerNumber) {
+        this.nameElement = document.createElement('p');
+        this.nameElement.id = 'p' + playerNumber;
+        this.nameElement.style.margin = '0';
+        this.nameElement.textContent = name;
+        this.scoreElement = document.createElement('p');
+        this.scoreElement.id = 'ps' + playerNumber;
+        this.scoreElement.style.margin = '0';
+        this.scoreElement.textContent = '0';
+
+        this.name = name;
+        this.score = 0;
+        this.isAttacker = false;
+        this.isCalled = false;
+      }
+    }
+    class Scoreboard {
+      constructor() {
+        this.element = document.getElementById('scoreboard');
+        this.playerNames = document.getElementById('player_names');
+        this.playerScores = document.getElementById('player_scores');
+        this.players = [];
+      }
+
+      getPlayerIndexByName(name) {
+        for (let i = 0; i < this.playerNames.children.length; i++) {
+          if (this.playerNames.children[i].textContent === name) {
+            return i;
+          }
+        }
+        return -1; // Player not found
+      }
+
+      addPlayer(player) {
+        this.playerNames.appendChild(player.nameElement);
+        this.playerScores.appendChild(player.scoreElement);
+
+        player.nameElement.addEventListener('click', (event) => {
+          const targetIndex = this.getPlayerIndexByName(event.target.textContent);
+          if(targetIndex == -1) return;
+
+          const player = this.players[targetIndex];
+
+          if(player.isAttacker)
+          {
+            this.clearAttacker();
+            event.target.style.color = 'black';
+            event.target.style.fontWeight = 'normal';
+            return;
+          }
+          if(player.isCalled)
+          {
+            this.clearCalled();
+            event.target.style.color = 'black';
+            event.target.style.fontWeight = 'normal';
+            return;
+          }
+
+          if(this.hasAttackerDefined())
+          {
+            this.setCalled(targetIndex);
+            event.target.style.color = 'blue';
+            event.target.style.fontWeight = 'bold';
+            return;
+          }
+          else
+          {
+            this.setAttacker(targetIndex);
+            event.target.style.color = 'red';
+            event.target.style.fontWeight = 'bold';
+            return;
+          }
+        });
+
+        this.players.push(player);
+      }
+
+      removePlayer(playerName) {
+        const index = this.getPlayerIndexByName(playerName);
+        if (index !== -1) {
+          this.playerNames.removeChild(this.playerNames.children[index]);
+          this.playerScores.removeChild(this.playerScores.children[index]);
+        }
+        this.players = this.players.filter(player => player.name !== playerName);
+      }
+
+      getPlayerScore(playerName) {
+        const player = this.players.find(player => player.name === playerName);
+        return player ? player.score : null;
+      }
+      addPlayerScore(playerName, score) {
+        const player = this.getPlayerIndexByName(playerName);
+        if (player !== -1) {
+          this.players[player].score += score;
+        }
+      }
+      setPlayerScore(playerName, score) {
+        const player = this.getPlayerIndexByName(playerName);
+        if (player !== -1) {
+          this.players[player].score = score;
+        }
+      }
+    
+      hasAttackerDefined() {
+        return this.players.some(player => player.isAttacker);
+      }
+
+      clearAttacker() {
+        for (let i = 0; i < this.players.length; i++)
+            this.players[i].isAttacker = false;
+      }
+      clearCalled() {
+        for (let i = 0; i < this.players.length; i++)
+            this.players[i].isCalled = false;
+      }
+      setAttacker(playerIndex)
+      {
+        this.clearAttacker();
+        this.players[playerIndex].isAttacker = true;
+      }
+      setCalled(playerIndex)
+      {
+        this.clearCalled();
+        this.players[playerIndex].isCalled = true;
+      }
+    }
+
+    const scoreboard = new Scoreboard();
+
+    document.getElementById('add_player').addEventListener('click', function() {
+      const playerName = prompt("Entrez le nom du joueur :");
+      if (playerName) {
+        const nPlayer = new Player(playerName, scoreboard.playerNames.children.length);
+        scoreboard.addPlayer(nPlayer);
+      }
+    });
+    document.getElementById('remove_player').addEventListener('click', function() {
+      const playerName = prompt("Entrez le nom du joueur à retirer :");
+      if (playerName) {
+        scoreboard.removePlayer(playerName);
+      }
+    });
+
+    // Score calculation
+
+    class Slider {
+      constructor(elementId, min, max, step = 1, initialValue = 0) {
+        this.element = document.getElementById(elementId);
+        this.element.min = min;
+        this.element.max = max;
+        this.element.step = step;
+        this.element.value = initialValue;
+        this.element.addEventListener('input', updateRecapMessages);
+      }
+      getValue() {
+        return parseInt(this.element.value);
+      }
+      setValue(value) {
+        this.element.value = value;
+      }
+    }
+
+    const contractSlider = new Slider('contract_slider', 0, 3, 1, 0);
+    const contractText = document.getElementById('contract_text');
+    const contractFactor = [1, 2, 4, 6];
+    const oudlerSlider = new Slider('oudler_slider', 0, 3, 1, 0);
+    const oudlerText = document.getElementById('oudler_text');
+    const scoreSlider = new Slider('score_slider', 0, 100, 1, 0);
+    const ScoreText = document.getElementById('score_text');
+    
+    const scoreMessage = document.getElementById('score_message');
+    const winMessage = document.getElementById('win_message');
+    const pointsOutput = document.getElementById('points_output');
+
+    function hasAttackWin()
+    {
+      var oudlerCount = oudlerSlider.getValue();
+      var cardScore = scoreSlider.getValue();
+      if(oudlerCount === 0 && cardScore >= 56) {
+        return true;
+      } if(oudlerCount === 1 && cardScore >= 51) {
+        return true;
+      } if(oudlerCount === 2 && cardScore >= 41) {
+        return true;
+      } if(oudlerCount === 3 && cardScore >= 36) {
+        return true;
+      }
+      return false;
+    }
+
+    function getExtraCardScore() {
+      switch (oudlerSlider.getValue()) {
+        case 0:
+        return scoreSlider.getValue() - 56;
+      case 1:
+        return scoreSlider.getValue() - 51;
+      case 2:
+        return scoreSlider.getValue() - 41;
+      case 3:
+        return scoreSlider.getValue() - 36;
+      default:
+        return 0;
+      }
+    }
+
+    function getTotalPointsForAttack() {
+      var extraScore = getExtraCardScore();
+      var contractIndex = contractSlider.getValue();
+      if(extraScore < 0)
+        return -1 * contractFactor[contractIndex] * (-25 + extraScore);
+      else
+        return contractFactor[contractIndex] * (25 + extraScore);
+    }
+
+    function updateSliderTextValues() {
+      oudlerText.textContent = oudlerSlider.getValue();
+      ScoreText.textContent = scoreSlider.getValue();
+
+      switch (contractSlider.getValue()) {
+      case 0:
+        contractText.textContent = "Petite";
+        break;
+      case 1:
+        contractText.textContent = "Garde";
+        break;
+      case 2:
+        contractText.textContent = "Garde Sans";
+        break;
+      case 3:
+        contractText.textContent = "Garde Contre";
+        break;
+      default:
+        contractText.textContent = "";
+      }
+    }
+
+    function updateRecapMessages() {
+      updateSliderTextValues();
+
+      if (hasAttackWin()) {
+        winMessage.textContent = "Victoire de l'attaque.";
+        scoreMessage.textContent = scoreSlider.getValue() + " points pour " + oudlerSlider.getValue() + " Oudlers.";
+        pointsOutput.textContent = "Points gagnés pour l'attaque : " + getTotalPointsForAttack()
+          + ", réussie de " + getExtraCardScore();
+
+      } else {
+        winMessage.textContent = "Victoire de la défense.";
+        scoreMessage.textContent = scoreSlider.getValue() + " points pour " + oudlerSlider.getValue() + " Oudlers.";
+        pointsOutput.textContent = "Points perdus pour l'attaque : " + getTotalPointsForAttack()
+          + ", chutée de " + getExtraCardScore();
+      }
+    }
+
+    function resetSliders() {
+      contractSlider.setValue(0);
+      oudlerSlider.setValue(0);
+      scoreSlider.setValue(0);
+      updateRecapMessages();
+    }
+
+    document.getElementById('add_points').addEventListener('click', function() {
+      if(scoreboard.hasAttackerDefined() == false)
+      {
+        alert("Veuillez définir un attaquant avant d'appliquer les points.");
+        return;
+      }
+
+      const totalPoints = getTotalPointsForAttack();
+      for (let i = 0; i < scoreboard.players.length; i++) {
+        const player = scoreboard.players[i];
+        if (player.isAttacker) {
+          player.score += totalPoints;
+        } else if (player.isCalled) {
+          player.score += totalPoints * 0.5;
+        } else {
+          player.score -= totalPoints * 0.5;
+        }
+        player.scoreElement.textContent = player.score;
+      }
+
+      resetSliders();
+    });
+
+  </script>
+
+</body>
+</html>
