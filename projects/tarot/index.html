@@ -24,20 +24,27 @@
 
     </div>
 
-    <label for="contract_slider" style="display: block; margin-bottom: 10px; margin-top: 20px;">
-      Contrat : <span id="contract_text"></span>
-    </label>
-    <input id="contract_slider" type="range" min="0" max="3" value="0">
+    <div> <!-- Slider Contract -->
+      <label for="contract_slider" style="display: block; margin-bottom: 10px; margin-top: 20px;">
+        Contrat : <span id="contract_text"></span>
+      </label>
+      <input id="contract_slider" type="range" min="0" max="3" value="0">
 
-    <label for="oudler_slider" style="display: block; margin-bottom: 10px;">
-      Nombre d'Oudlers : <span id="oudler_text"></span>
-    </label>
-    <input id="oudler_slider" type="range" min="0" max="3" value="0">
+    </div>
 
-    <label for="score_slider" style="display: block; margin-bottom: 10px;">
-      Score de l'attaque : <span id="score_text"></span>
-    </label>
-    <input id="score_slider" type="range" min="0" max="90" step="10" value="0">
+    <div> <!-- Slider Oudler -->
+      <label for="oudler_slider" style="display: block; margin-bottom: 10px;">
+        Nombre de bouts : <span id="oudler_text"></span>
+      </label>
+      <input id="oudler_slider" type="range" min="0" max="3" value="0">
+    </div>
+
+    <div> <!-- Slider Score -->
+      <label for="score_slider" style="display: block; margin-bottom: 10px;">
+        Score de l'attaque : <span id="score_text"></span>
+      </label>
+      <input id="score_slider" type="range" min="0" max="90" step="10" value="0">
+    </div> 
 
     <p id="win_message"></p>
     <p id="score_message">Déplace le slider pour obtenir un score.</p>
@@ -202,22 +209,42 @@
         this.element.max = max;
         this.element.step = step;
         this.element.value = initialValue;
+        this.element.style.width = '100%';
         this.element.addEventListener('input', updateRecapMessages);
+
+        this.add = document.createElement("button");
+        this.add.textContent = "+";
+        this.add.addEventListener('click', () => {
+          this.element.stepUp();
+          updateRecapMessages();
+        });
+
+        this.element.parentNode.appendChild(this.add);
+
+        this.sub = document.createElement("button");
+        this.sub.textContent = "-";
+        this.sub.addEventListener('click', () => {
+          this.element.stepDown();
+          updateRecapMessages();
+        });
+        this.element.parentNode.appendChild(this.sub);
       }
       getValue() {
         return parseInt(this.element.value);
       }
       setValue(value) {
         this.element.value = value;
+        updateRecapMessages();
       }
     }
 
     const contractSlider = new Slider('contract_slider', 0, 3, 1, 0);
+
     const contractText = document.getElementById('contract_text');
     const contractFactor = [1, 2, 4, 6];
     const oudlerSlider = new Slider('oudler_slider', 0, 3, 1, 0);
     const oudlerText = document.getElementById('oudler_text');
-    const scoreSlider = new Slider('score_slider', 0, 100, 1, 0);
+    const scoreSlider = new Slider('score_slider', 0, 91, 10, 0);
     const ScoreText = document.getElementById('score_text');
     
     const scoreMessage = document.getElementById('score_message');
@@ -291,13 +318,13 @@
 
       if (hasAttackWin()) {
         winMessage.textContent = "Victoire de l'attaque.";
-        scoreMessage.textContent = scoreSlider.getValue() + " points pour " + oudlerSlider.getValue() + " Oudlers.";
+        scoreMessage.textContent = "Score de " + scoreSlider.getValue() + " pour " + oudlerSlider.getValue() + " bouts.";
         pointsOutput.textContent = "Points gagnés pour l'attaque : " + getTotalPointsForAttack()
           + ", réussie de " + getExtraCardScore();
 
       } else {
         winMessage.textContent = "Victoire de la défense.";
-        scoreMessage.textContent = scoreSlider.getValue() + " points pour " + oudlerSlider.getValue() + " Oudlers.";
+        scoreMessage.textContent =  "Score de " + scoreSlider.getValue() + " pour " + oudlerSlider.getValue() + " bouts.";
         pointsOutput.textContent = "Points perdus pour l'attaque : " + getTotalPointsForAttack()
           + ", chutée de " + getExtraCardScore();
       }
