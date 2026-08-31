@@ -47,7 +47,7 @@
     </div> 
 
     <p id="win_message"></p>
-    <p id="score_message">Déplace le slider pour obtenir un score.</p>
+    <p id="score_message">Déplace les jauges pour obtenir un score.</p>
     <p id="points_output"></p>
 
     <button id="add_points">Appliquer les points</button>
@@ -56,21 +56,82 @@
 
   <script>
     
+    const PLAYER_ROLE =
+    {
+      DEFENDER : 0,
+      CALLED : 1,
+      ATTACKER : 2
+    };
+    
     class Player {
       constructor(name, playerNumber) {
         this.nameElement = document.createElement('p');
         this.nameElement.id = 'p' + playerNumber;
         this.nameElement.style.margin = '0';
         this.nameElement.textContent = name;
-        this.scoreElement = document.createElement('p');
-        this.scoreElement.id = 'ps' + playerNumber;
-        this.scoreElement.style.margin = '0';
-        this.scoreElement.textContent = '0';
+        this.scoreElement = document.createElement('div');
+
+        this.ps = document.createElement('p');
+        this.ps.id = 'ps' + playerNumber;
+        this.ps.style.margin = '0';
+        this.ps.style.fontWeight = 'bold';
+        this.ps.textContent = '0';
+        
+        this.scoreElement.appendChild(this.ps);
 
         this.name = name;
-        this.score = 0;
-        this.isAttacker = false;
-        this.isCalled = false;
+        this.scoreList = [0];
+        this.totalScore = 0;
+        this.role = PLAYER_ROLE.DEFENDER;
+      }
+      
+      addPoints(points, playerNumber) {
+        this.scoreList.push(points);
+        this.totalScore += points;
+        this.ps.textContent = this.totalScore;
+        
+        const ps = document.createElement('p');
+        ps.id = 'ps' + playerNumber + "-" + this.scoreList.length;
+        ps.style.margin = '0';
+        ps.textContent = points;
+
+        this.scoreElement.appendChild(ps);
+      }
+      
+      setRole(role) {
+        this.nameElement.style.color = 'black';
+        this.nameElement.style.fontWeight = 'normal';
+        
+        switch (role) {
+          case PLAYER_ROLE.DEFENDER:
+          {
+            this.nameElement.style.color = 'black';
+            this.nameElement.style.fontWeight = 'normal';
+            this.role = PLAYER_ROLE.DEFENDER;
+            break;
+          }
+          case PLAYER_ROLE.CALLED:
+          {
+            this.nameElement.style.color = 'blue';
+            this.nameElement.style.fontWeight = 'bold';
+            this.role = PLAYER_ROLE.CALLED;
+            break;
+          }
+          case PLAYER_ROLE.ATTACKER:
+          {
+            this.nameElement.style.color = 'red';
+            this.nameElement.style.fontWeight = 'bold';
+            this.role = PLAYER_ROLE.ATTACKER;
+            break;
+          }
+          default:
+          {
+            this.nameElement.style.color = 'black';
+            this.nameElement.style.fontWeight = 'normal';
+            this.role = PLAYER_ROLE.DEFENDER;
+            break;
+          }
+        }
       }
     }
     class Scoreboard {
@@ -90,46 +151,51 @@
         return -1; // Player not found
       }
 
+      CBPlayerNameClicked(event)
+      {
+        const playerIndex = this.getPlayerIndexByName(event.target.textContent);
+        if(playerIndex == -1) return;
+
+        const thisPlayer = this.players[playerIndex];
+
+        // Attacker
+        if(this.hasAttackerDefined() == false)
+        {
+          this.setAttacker(playerIndex);
+          return;
+        }
+        if(this.hasAttackerDefined() && thisPlayer.role == PLAYER_ROLE.ATTACKER)
+        {
+          this.clearAttacker();
+          thisPlayer.setRole(PLAYER_ROLE.DEFENDER);
+          return;
+        }
+
+        // Called
+        if(this.players.length == 5)
+        {
+          if(this.hasAttackerDefined() && thisPlayer.role != PLAYER_ROLE.CALLED)
+          {
+            this.setCalled(playerIndex);
+            return;
+          }
+          if(this.hasAttackerDefined() && thisPlayer.role == PLAYER_ROLE.CALLED)
+          {
+            this.clearCalled()
+            thisPlayer.setRole(PLAYER_ROLE.DEFENDER);
+            return;
+          }
+        }
+
+        // Defender
+        thisPlayer.setRole(PLAYER_ROLE.DEFENDER);
+      }
+      
       addPlayer(player) {
         this.playerNames.appendChild(player.nameElement);
         this.playerScores.appendChild(player.scoreElement);
 
-        player.nameElement.addEventListener('click', (event) => {
-          const targetIndex = this.getPlayerIndexByName(event.target.textContent);
-          if(targetIndex == -1) return;
-
-          const player = this.players[targetIndex];
-
-          if(player.isAttacker)
-          {
-            this.clearAttacker();
-            event.target.style.color = 'black';
-            event.target.style.fontWeight = 'normal';
-            return;
-          }
-          if(player.isCalled)
-          {
-            this.clearCalled();
-            event.target.style.color = 'black';
-            event.target.style.fontWeight = 'normal';
-            return;
-          }
-
-          if(this.hasAttackerDefined())
-          {
-            this.setCalled(targetIndex);
-            event.target.style.color = 'blue';
-            event.target.style.fontWeight = 'bold';
-            return;
-          }
-          else
-          {
-            this.setAttacker(targetIndex);
-            event.target.style.color = 'red';
-            event.target.style.fontWeight = 'bold';
-            return;
-          }
-        });
+        player.nameElement.addEventListener('click', (event) => {this.CBPlayerNameClicked(event);});
 
         this.players.push(player);
       }
@@ -145,42 +211,49 @@
 
       getPlayerScore(playerName) {
         const player = this.players.find(player => player.name === playerName);
-        return player ? player.score : null;
+        if(!player) return 0;
+        return player.totalScore;
       }
       addPlayerScore(playerName, score) {
-        const player = this.getPlayerIndexByName(playerName);
-        if (player !== -1) {
-          this.players[player].score += score;
-        }
-      }
-      setPlayerScore(playerName, score) {
-        const player = this.getPlayerIndexByName(playerName);
-        if (player !== -1) {
-          this.players[player].score = score;
+        const playerIndex = this.getPlayerIndexByName(playerName);
+        if (playerIndex !== -1) {
+          const player = this.players[playerIndex];
+          player.addPoints(score, playerIndex);
         }
       }
     
       hasAttackerDefined() {
-        return this.players.some(player => player.isAttacker);
+        for (let i = 0; i < this.players.length; i++)
+          if(this.players[i].role == PLAYER_ROLE.ATTACKER) return true;
+        return false;
+      }
+      hasCalledDefined() {
+        for (let i = 0; i < this.players.length; i++)
+          if(this.players[i].role == PLAYER_ROLE.CALLED) return true;
+        return false;
       }
 
       clearAttacker() {
         for (let i = 0; i < this.players.length; i++)
-            this.players[i].isAttacker = false;
+        {
+          if(this.players[i].role == PLAYER_ROLE.ATTACKER)
+            this.players[i].setRole(PLAYER_ROLE.DEFENDER);
+        }
       }
       clearCalled() {
         for (let i = 0; i < this.players.length; i++)
-            this.players[i].isCalled = false;
+          if(this.players[i].role == PLAYER_ROLE.CALLED)
+            this.players[i].setRole(PLAYER_ROLE.DEFENDER);
       }
       setAttacker(playerIndex)
       {
         this.clearAttacker();
-        this.players[playerIndex].isAttacker = true;
+        this.players[playerIndex].setRole(PLAYER_ROLE.ATTACKER);
       }
       setCalled(playerIndex)
       {
         this.clearCalled();
-        this.players[playerIndex].isCalled = true;
+        this.players[playerIndex].setRole(PLAYER_ROLE.CALLED);
       }
     }
 
@@ -251,10 +324,9 @@
     const winMessage = document.getElementById('win_message');
     const pointsOutput = document.getElementById('points_output');
 
-    function hasAttackWin()
-    {
-      var oudlerCount = oudlerSlider.getValue();
-      var cardScore = scoreSlider.getValue();
+    function hasAttackWin() {
+      let oudlerCount = oudlerSlider.getValue();
+      let cardScore = scoreSlider.getValue();
       if(oudlerCount === 0 && cardScore >= 56) {
         return true;
       } if(oudlerCount === 1 && cardScore >= 51) {
@@ -283,10 +355,10 @@
     }
 
     function getTotalPointsForAttack() {
-      var extraScore = getExtraCardScore();
-      var contractIndex = contractSlider.getValue();
+      let extraScore = getExtraCardScore();
+      let contractIndex = contractSlider.getValue();
       if(extraScore < 0)
-        return -1 * contractFactor[contractIndex] * (-25 + extraScore);
+        return -1 * contractFactor[contractIndex] * (25 + extraScore);
       else
         return contractFactor[contractIndex] * (25 + extraScore);
     }
@@ -334,7 +406,12 @@
       contractSlider.setValue(0);
       oudlerSlider.setValue(0);
       scoreSlider.setValue(0);
+
       updateRecapMessages();
+
+      winMessage.textContent = "";
+      scoreMessage.textContent = "Déplace les jauges pour obtenir un score.";
+      pointsOutput.textContent = "";
     }
 
     document.getElementById('add_points').addEventListener('click', function() {
@@ -345,19 +422,57 @@
       }
 
       const totalPoints = getTotalPointsForAttack();
+      const attackerCount = 1 + (scoreboard.hasCalledDefined() ? 0.5 : 0);
+      let defenderCount = 0;
+      for (const player of scoreboard.players) {
+        if(player.role == PLAYER_ROLE.DEFENDER)
+        {
+          console.log("Defender: " + player.name)
+          defenderCount++;
+        }
+          
+      }
+      
+      let defenderFac = attackerCount / defenderCount;
+      // switch(defenderCount)
+      // {
+      //   case 2:
+      //     defenderFac = 1/2;
+      //     break;
+      //   case 3:
+      //   {
+      //     if(scoreboard.hasCalledDefined())
+      //     {
+      //       defenderFac = 1.5/3;
+      //     }
+      //     else
+      //       defenderFac = 1/3;
+      //   }
+      //     break;
+      //   case 4:
+      //     defenderFac = 1/4;
+      // }
+      
+      console.log(defenderFac);
       for (let i = 0; i < scoreboard.players.length; i++) {
         const player = scoreboard.players[i];
-        if (player.isAttacker) {
-          player.score += totalPoints;
-        } else if (player.isCalled) {
-          player.score += totalPoints * 0.5;
+        let scoreToAdd = 0;
+        if (player.role == PLAYER_ROLE.ATTACKER) {
+          scoreToAdd = totalPoints;
+        } else if (player.role == PLAYER_ROLE.CALLED) {
+          scoreToAdd = totalPoints * 0.5;
         } else {
-          player.score -= totalPoints * 0.5;
+          scoreToAdd = -totalPoints * defenderFac;
         }
-        player.scoreElement.textContent = player.score;
+        scoreToAdd *= (hasAttackWin() ? 1 : -1);
+        scoreToAdd = Math.floor(scoreToAdd);
+        
+        scoreboard.addPlayerScore(player.name, scoreToAdd);
       }
 
       resetSliders();
+      scoreboard.clearAttacker();
+      scoreboard.clearCalled();
     });
 
   </script>
