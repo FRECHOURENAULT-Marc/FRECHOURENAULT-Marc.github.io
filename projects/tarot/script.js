@@ -268,24 +268,20 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     }
 
-    class PlayerAnnouncementData
-    {
+    class PlayerAnnouncementData {
         constructor(name, role, value) {
             this.role = role;
             this.value = value;
             this.name = name;
         }
     }
-    class PlayerMisereData
-    {
+    class PlayerMisereData {
         constructor(name, value) {
             this.value = value;
             this.name = name;
         }
     }
-    class AnnouncementManager
-    {
-
+    class AnnouncementManager {
         constructor()
         {
             this.playerAnnouncecements = [];
@@ -384,10 +380,8 @@ document.addEventListener('DOMContentLoaded', function(){
         }
 
     }
-    class ChelemManager
-    {
-        constructor(scoreboard)
-        {
+    class ChelemManager {
+        constructor(scoreboard) {
             this.scoreboard = scoreboard;
             
             this.div = document.createElement("div");
@@ -435,14 +429,12 @@ document.addEventListener('DOMContentLoaded', function(){
             this.buildChelemPlayerSelect(this.scoreboard.players);
         }
         
-        buildChelemPlayerSelect(players)
-        {
+        buildChelemPlayerSelect(players) {
             for(let i = 1; i < this.selectPlayer.length; i++)
             {
                 let opt = this.selectPlayer[i];
                 this.selectPlayer.removeChild(opt);
             }
-                
             
             for(let i = 0; i < players.length; i++)
             {
@@ -458,9 +450,27 @@ document.addEventListener('DOMContentLoaded', function(){
             return this.selectValue.value;
         }
         
+        getValuePlayer()
+        {
+            return this.selectPlayer.value;
+        }
+        
         applyChelemPoints(team, otherTeam)
         {
-            //to do
+           const teamFac = (hasPlayerWin(team[0]) ? 1 : -1);
+           const playerName = this.getValuePlayer();
+           let isFirstTeam = false;
+           for(let i = 0; i < team.length; i++)
+           {
+               if(playerName == team[i].name)
+                   isFirstTeam = true;
+           }           
+           for(let i = 0; i < otherTeam.length; i++)
+           {
+               if(playerName == otherTeam[i].name)
+                   isFirstTeam = false;
+           }
+           
         }
     }
 
@@ -571,25 +581,30 @@ document.addEventListener('DOMContentLoaded', function(){
         main.appendChild(button);
     }
     
-    function createRulesText()
-    {
+    function createRulesText() {
         let div = document.createElement("div");
         div.id = "rules_text";
         main.appendChild(div);
 
         let p1 = document.createElement("p");
         div.appendChild(p1);
-        p1.innerHTML = "Le prenant ne peut pas faire d'annonces ou elles seront non comptabilisées.";
+        p1.innerHTML = "Les attaquants ne peuvent pas annoncer de misères, s'ils le font elles seront non comptabilisées.";
         p1.innerHTML += '</br>';
-        p1.innerHTML += "Le prenant ne peut appeler qu'à 5 joueurs.";        
+        p1.innerHTML += "Le prenant ne peut appeler qu'à 5 joueurs.";
         p1.innerHTML += '</br>';
-        p1.innerHTML += "L'appelé peut faire des annonces. S'il gagne son annonce est déduite au prenant, s'il perd elle est donnée au prenant.";
+        p1.innerHTML += "Lorsqu'une annonce est faite, elle engage l'équipe de l'annonceur (règlement FFT).";
         p1.innerHTML += '</br>';
         p1.innerHTML += "Valeurs des contrats : 25, 50, 100, 150.";
         p1.innerHTML += '</br>';
         p1.innerHTML += "Valeurs des annonces (misères) : 10, 10, 20.";
         p1.innerHTML += '</br>';
-        p1.innerHTML += "Valeurs des annonces (poignées) : 20, 30, 40.";
+        p1.innerHTML += "Valeurs des annonces (poignées) : 20, 30, 40.";        
+        p1.innerHTML += '</br>';
+        p1.innerHTML += "Valeurs des Chelems : -200(raté), 200(non annoncé), 400(réussi).";        
+        p1.innerHTML += '</br>';
+        p1.innerHTML += "Un Chelem n'affecte pas les coéquipiers de l'annonceur.";
+        p1.innerHTML += '</br>';
+        p1.innerHTML += "Les règles présentées sont vouées à être modifiées.";
     }
 
     const scoreboard = new Scoreboard();
