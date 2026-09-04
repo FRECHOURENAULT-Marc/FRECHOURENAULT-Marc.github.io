@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () =>
   project_usr.AddDesc("Vous incarnez le commandant d'une mission spatiale dans un futur alternatif.");
   project_usr.AddDesc("Dans cet avenir, les singes ont remplacé les humains suite à des expériences menées sur ces animaux pour les améliorer génétiquement.");
   project_usr.AddDesc("Cet nouvel ordre mondial part à l'exploration de l'espace et y découvre une ressource qui va devenir indispensable : le bananium.");
-  project_usr.AddDesc("Votre objectif principal est de réduire au silence des groupes de singes n'obéissent plus au commandement de l'Union des République des Singes (Union of Samiens Republic).");
+  project_usr.AddDesc("Votre objectif principal est de réduire au silence des groupes de singes n'obéissent plus au commandement de l'Union des Républiques des Singes (Union of Samiens Republic).");
   project_usr.AddDesc("");
   project_usr.AddDesc("Pour ce faire, vous disposez de cartes (préalablement choisis en fonction de votre stratégie) qui vous permettent de déployer bâtiment, unités et capacités stratégiques.");
   project_usr.AddDesc("Mais attention, vos ressources sont limitées et votre adversaire ne vous laissera pas de répit pour préparer vos attaques.");
