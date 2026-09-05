@@ -1,3 +1,17 @@
+:root {
+    --clickable_dark: #5c5c5c;
+    --clickable_light2: #c7c7c7;
+    --clickable_light: #f2f2f2;
+    --orange: #eb5e28;
+    --slider-height: 10px;
+}
+
+body {
+    color: black;
+    font-family: arial, sans-serif;
+    font-size: 13px;
+}
+
 div {
     margin: 0.5rem;
 }
@@ -5,15 +19,23 @@ button {
     margin: 0.5rem;
     min-width: 3rem;
     min-height: 2rem;
+
+    background-color: var(--clickable_dark);
+    color: var(--clickable_light);
+
+    border-radius: 4px;
 }
-input {
-    margin: 0.5rem;
-}
+
 select {
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
     min-width: 3rem;
     min-height: 2rem;
+
+    color: white;
+    background-color: #5c5c5c;
+
+    border-radius: 4px;
 }
 option {
     margin: 0.5rem;

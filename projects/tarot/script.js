@@ -19,17 +19,20 @@ document.addEventListener('DOMContentLoaded', function(){
     class Player {
         constructor(name) {
             this.nameElement = document.createElement('p');
-            this.nameElement.style.margin = '0';
+            this.nameElement.style.margin = '0.25rem';
             this.nameElement.textContent = name;
-            this.nameElement.style.border = '1px solid black';
+            this.nameElement.style.borderRadius = '4px';
             this.nameElement.style.padding = '0.5rem';
-            this.nameElement.style.maxWidth = '4rem';
+            this.nameElement.style.color = 'white';
+            this.nameElement.style.backgroundColor = '#eb5e28';
+            this.nameElement.style.fontWeight = 'bold';
 
             this.scoreElement = document.createElement('div');
 
             this.ps = document.createElement('p');
             this.ps.style.margin = '0';
             this.ps.style.fontWeight = 'bold';
+            this.ps.style.fontSize = '1.5rem';
             this.ps.textContent = '0';
 
             this.scoreElement.appendChild(this.ps);
@@ -43,11 +46,10 @@ document.addEventListener('DOMContentLoaded', function(){
         resetScore() {
             
             this.totalScore = 0;
-            this.ps.textContent = this.totalScore;
-            for(let i = 1; i < this.scoreElement.children.length; i++)
+            this.ps.textContent = 0;
+            while(this.scoreElement.children.length > 1)
             {
-                let score = this.scoreElement.children[i];
-                this.scoreElement.removeChild(score);
+                this.scoreElement.removeChild(this.scoreElement.lastChild);
             }
         }
 
@@ -60,39 +62,35 @@ document.addEventListener('DOMContentLoaded', function(){
             ps.style.margin = '0';
             ps.textContent = points;
 
-            this.scoreElement.appendChild(ps);
+            this.scoreElement.insertBefore(ps, this.ps)
+            //this.scoreElement.appendChild(ps);
         }
 
         setRole(role) {
-            this.nameElement.style.color = 'black';
-            this.nameElement.style.fontWeight = 'normal';
+            this.nameElement.style.backgroundColor = 'var(--orange)';
 
             switch (role) {
                 case PLAYER_ROLE.DEFENDER:
                 {
-                    this.nameElement.style.color = 'black';
-                    this.nameElement.style.fontWeight = 'normal';
+                    this.nameElement.style.backgroundColor = 'var(--orange)';
                     this.role = PLAYER_ROLE.DEFENDER;
                     break;
                 }
                 case PLAYER_ROLE.CALLED:
                 {
-                    this.nameElement.style.color = 'blue';
-                    this.nameElement.style.fontWeight = 'bold';
+                    this.nameElement.style.backgroundColor = 'blue';
                     this.role = PLAYER_ROLE.CALLED;
                     break;
                 }
                 case PLAYER_ROLE.ATTACKER:
                 {
-                    this.nameElement.style.color = 'red';
-                    this.nameElement.style.fontWeight = 'bold';
+                    this.nameElement.style.backgroundColor = 'red';
                     this.role = PLAYER_ROLE.ATTACKER;
                     break;
                 }
                 default:
                 {
-                    this.nameElement.style.color = 'black';
-                    this.nameElement.style.fontWeight = 'normal';
+                    this.nameElement.style.backgroundColor = 'var(--orange)';
                     this.role = PLAYER_ROLE.DEFENDER;
                     break;
                 }
@@ -109,15 +107,40 @@ document.addEventListener('DOMContentLoaded', function(){
 
             this.element = document.createElement("div");
             this.element.id = 'scoreboard';
-
             main.appendChild(this.element);
+
+            this.managePlayerDiv = document.createElement("div");
+            this.managePlayerDiv.style.display = 'flex';
+            this.managePlayerDiv.style.flexDirection = 'row';
+            this.managePlayerDiv.style.alignItems = 'center';
+            this.element.appendChild(this.managePlayerDiv);
 
             const add = document.createElement("p");
             add.id = 'add_player';
-            add.textContent = "Ajouter un joueur";
+            add.style.backgroundColor = 'var(--clickable_dark)';
+            add.style.color = 'white';
+            add.style.fontWeight = 'bold';
+            add.style.fontSize = '1.5rem';
+            add.style.paddingLeft = '.5rem';
+            add.style.paddingRight = '.5rem';
+            add.style.borderRadius = '1.5rem';
+            add.textContent = "+";
+
+            this.img = document.createElement("img");
+            this.img.src = "people.png";
+            this.img.style.maxWidth = "100px";
+            this.img.style.maxHeight = "100px";
+
             const remove = document.createElement("p");
             remove.id = 'remove_player';
-            remove.textContent = "Supprimer un joueur";
+            remove.textContent = "-";
+            remove.style.backgroundColor = 'var(--clickable_dark)';
+            remove.style.color = 'white';
+            remove.style.fontWeight = 'bold';
+            remove.style.fontSize = '1.5rem';
+            remove.style.paddingLeft = '.7rem';
+            remove.style.paddingRight = '.7rem';
+            remove.style.borderRadius = '1.5rem';
 
             this.players = [];
 
@@ -149,13 +172,16 @@ document.addEventListener('DOMContentLoaded', function(){
                 }
             });
 
-            this.element.appendChild(add);
-            this.element.appendChild(remove);
+            this.managePlayerDiv.appendChild(add);
+            this.managePlayerDiv.appendChild(this.img);
+            this.managePlayerDiv.appendChild(remove);
 
             this.playerTexts = document.createElement("div");
             this.playerTexts.style.display = 'flex';
             this.playerTexts.style.flexDirection = 'row';
+            this.playerTexts.style.justifyContent = 'center';
             this.playerTexts.style.margin = '0';
+            this.playerTexts.style.minWidth = '100%';
 
             this.element.appendChild(this.playerTexts);
         }
@@ -219,6 +245,9 @@ document.addEventListener('DOMContentLoaded', function(){
             const pDiv = document.createElement("div");
             pDiv.style.textAlign = "center";
             pDiv.style.margin = "0";
+            pDiv.style.width = "100%";
+            pDiv.style.backgroundColor = "#f2f2f2";
+            pDiv.style.borderRadius = "4px";
             pDiv.appendChild(player.nameElement);
             pDiv.appendChild(player.scoreElement);
 
@@ -340,13 +369,13 @@ document.addEventListener('DOMContentLoaded', function(){
             option0_1.textContent = "❌";
             option0_1.value = "0";
             const optionM1 = document.createElement("option");
-            optionM1.textContent = "🃏";
+            optionM1.textContent = "✨";
             optionM1.value = "10";
             const optionM2 = document.createElement("option");
             optionM2.textContent = "👑";
             optionM2.value = "10";
             const optionM3 = document.createElement("option");
-            optionM3.textContent = "🃏👑";
+            optionM3.textContent = "✨👑";
             optionM3.value = "20";
 
             selectMisere.appendChild(option0_1);
@@ -660,29 +689,13 @@ document.addEventListener('DOMContentLoaded', function(){
     class Slider {
         constructor(elementId, name, min, max, step = 1, initialValue = 0) {
             this.divElement = document.createElement("div");
+            this.divElement.style.backgroundColor = "var(--clickable_light)";
 
             const divTop = document.createElement("div");
             divTop.style.display = "flex";
             divTop.style.flexDirection = "row";
-            const divButton = document.createElement("div");
-            divTop.appendChild(divButton);
+            divTop.style.justifyContent = "center";
             this.divElement.appendChild(divTop);
-
-            this.sub = document.createElement("button");
-            this.sub.textContent = "-";
-            this.sub.addEventListener('click', () => {
-                this.input.stepDown();
-                updateRecapMessages();
-            });
-            divButton.appendChild(this.sub);
-
-            this.add = document.createElement("button");
-            this.add.textContent = "+";
-            this.add.addEventListener('click', () => {
-                this.input.stepUp();
-                updateRecapMessages();
-            });
-            divButton.appendChild(this.add);
 
             this.label = document.createElement("label");
             this.label.htmlFor = elementId;
@@ -694,36 +707,93 @@ document.addEventListener('DOMContentLoaded', function(){
             divTop.appendChild(this.label);
 
             this.span = [];
-            if(Array.isArray(name))
-            {
+            if(Array.isArray(name)) {
+                this.label.style.display = "flex";
+                this.label.style.flexDirection = "row";
+                this.label.style.gap = "5rem";
+
                 for(let i = 0; i < name.length; i++)
                 {
+                    const labelDiv = document.createElement("div");
+                    this.label.appendChild(labelDiv);
+                    labelDiv.style.display = "flex";
+                    labelDiv.style.flexDirection = "column";
+
                     const span = document.createElement("span")
                     this.span.push(span);
                     span.id = name[i].toLowerCase()+i.toString();
-                    this.label.appendChild(document.createTextNode((i == 0 ? "" : " ") +name[i]+" "));
-                    this.label.appendChild(span);
+
+                    const textNode = document.createTextNode((i == 0 ? "" : " ") +name[i]+" ");
+                    labelDiv.appendChild(textNode);
+
+                    this.label.style.fontWeight = "bold";
+                    this.label.style.fontSize = "1.5rem";
+                    labelDiv.appendChild(span);
+
                 }
             }
-            else
-            {
+            else {
                 const span = document.createElement("span")
                 this.span.push(span);
                 span.id = name.toLowerCase();
                 this.label.appendChild(document.createTextNode(name+" "));
+                this.label.style.fontWeight = "bold";
+                this.label.style.fontSize = "1.5rem";
                 this.label.appendChild(span);
             }
+
+            const divButton = document.createElement("div");
+            this.divElement.appendChild(divButton);
+            divButton.style.display = "flex";
+            divButton.style.flexDirection = "row";
+            divButton.style.backgroundColor = "var(--clickable_light2)";
+            divButton.style.borderRadius = "10px";
+
+            this.sub = document.createElement("button");
+            this.sub.style.fontSize = "1.5rem";
+            this.sub.style.fontWeight = "bold";
+            this.sub.style.margin = "0";
+            this.sub.style.borderTopLeftRadius = "10px";
+            this.sub.style.borderBottomLeftRadius = "10px";
+            this.sub.style.borderTopRightRadius = "0px";
+            this.sub.style.borderBottomRightRadius = "0px";
+
+            this.sub.textContent = "-";
+            this.sub.addEventListener('click', () => {
+                this.input.stepDown();
+                updateRecapMessages();
+            });
+            divButton.appendChild(this.sub);
+            this.add = document.createElement("button");
+            this.add.style.fontSize = "1.5rem";
+            this.add.style.fontWeight = "bold";
+            this.add.style.margin = "0";
+            this.add.style.borderTopLeftRadius = "0px";
+            this.add.style.borderBottomLeftRadius = "0px";
+            this.add.style.borderTopRightRadius = "10px";
+            this.add.style.borderBottomRightRadius = "10px";
+            this.add.textContent = "+";
+
+            this.add.addEventListener('click', () => {
+                this.input.stepUp();
+                updateRecapMessages();
+            });
+
 
             this.input = document.createElement("input");
             this.input.min = min;
             this.input.max = max;
             this.input.type = "range";
+            this.input.className = "custom-slider";
             this.input.step = step.toString();
             this.input.value = initialValue.toString();
             this.input.style.width = '100%';
             this.input.style.margin = '0';
             this.input.addEventListener('input', updateRecapMessages);
-            this.divElement.appendChild(this.input);
+
+            divButton.appendChild(this.sub);
+            divButton.appendChild(this.input);
+            divButton.appendChild(this.add);
 
             main.appendChild(this.divElement);
         }
@@ -745,6 +815,54 @@ document.addEventListener('DOMContentLoaded', function(){
             } else {
                 this.span[0].textContent = value;
             }
+        }
+    }
+    class InputSelect {
+
+        constructor(name, valueNames) {
+            this.divElement = document.createElement("div");
+            document.querySelector("main").appendChild(this.divElement);
+            this.divElement.style.display = "flex";
+            this.divElement.style.flexDirection = "row";
+            this.divElement.style.backgroundColor = "#f2f2f2";
+            this.divElement.style.borderRadius = "4px";
+
+            // clair #f2f2f2
+            // foncé #5c5c5c
+
+            this.text = document.createElement("p");
+            this.divElement.appendChild(this.text);
+            this.text.textContent = name;
+            this.text.style.fontWeight = "bold";
+            this.text.style.fontSize = "1.5rem";
+
+            this.select = document.createElement("select");
+            this.select.id = name.toLowerCase();
+            this.select.addEventListener("change", () => {
+                updateRecapMessages();
+            })
+            this.divElement.appendChild(this.select);
+            this.select.style.width = "100%";
+            this.select.style.fontWeight = "bold";
+            this.select.style.fontSize = "1.5rem";
+
+            for(let i = 0; i < valueNames.length; i++) {
+                const option = document.createElement("option");
+                option.textContent = valueNames[i];
+                option.value = i.toString();
+                this.select.appendChild(option);
+            }
+        }
+
+        getValue() {
+            return parseInt(this.select.value);
+        }
+        setValue(value) {
+            this.select.value = value;
+            updateRecapMessages();
+        }
+        setValueText(value) {
+            //todo
         }
     }
 
@@ -782,12 +900,11 @@ document.addEventListener('DOMContentLoaded', function(){
         p1.innerHTML += '</br>';
         p1.innerHTML += "Valeurs des contrats selon la FFT: 25, 50, 100, 150.";
         p1.innerHTML += '</br>';
-        p1.innerHTML += 'Une "annonce" est définie comme un pseudo contrat supplémentaire qui doit être annoncé au cours du premier tour.';
+        p1.innerHTML += 'Une "annonce" est définie comme un pseudo contrat supplémentaire qui doit être annoncé au cours de la première volée.';
         p1.innerHTML += '</br>';
         p1.innerHTML += "Une annonce n'affecte pas les coéquipiers de l'annonceur, uniquement les adervsaires et l'annonceur.";
         p1.innerHTML += '</br>';
         p1.innerHTML += "La valeur d'une poignée est comptée comme 'valeur de la poignée' x 'nombre d'aversaires'.";
-        p1.innerHTML += '</br>';
         p1.innerHTML += "Pour les poignées, il couviendra de montrer le nombre d'atouts corresdpondant à la poignée avavnt que l'annonceur ne joue sa première carte. ";
         p1.innerHTML += "L'excuse ne peut être montrée pour la poignée que si l'annonceur n'a pas d'autre atout à montrer. ";
         p1.innerHTML += "Le nombre d'atouts nécessaires pour annoncer des poignées change en fonction du nombre de joueurs et des règles appliquées, à vous de choisir.";
@@ -859,9 +976,12 @@ document.addEventListener('DOMContentLoaded', function(){
     const announcements = new AnnouncementManager();
 
     const contractFactor = [1, 2, 4, 6];
-    const contractSlider = new Slider('contract_slider','Contrat', 0, 3, 1, 0);
-    const oudlerSlider = new Slider('oudler_slider', 'Bouts', 0, 3, 1, 0);
-    const scoreSlider = new Slider('score_slider', ["Attaque", "Défense"], 0, 91, 1, 0);
+
+    const contractSelect = new InputSelect("Contrat", ["Petite","Garde","Garde Sans","Garde Contre"]);
+    contractSelect.divElement.style.marginTop = "2rem";
+    const oudlerSelect = new InputSelect("Bouts", ["0","1","2","3"]);
+    const scoreSlider = new Slider('score_slider', ["Attaque", "Défense"],0, 91, 1, 0);
+    scoreSlider.divElement.style.marginBottom = "2rem";
 
     chelem.init(scoreboard);
     theOne.init(scoreboard);
@@ -892,13 +1012,13 @@ document.addEventListener('DOMContentLoaded', function(){
         theOne.buildTheOneSelect();
     }
 
-    contractSlider.setValue(0)
-    oudlerSlider.setValue(0);
+    contractSelect.setValue(0)
+    oudlerSelect.setValue(0);
     scoreSlider.setValue(0);
     updateRecapMessages();
 
     function hasAttackWin() {
-        let oudlerCount = oudlerSlider.getValue();
+        let oudlerCount = oudlerSelect.getValue();
         let cardScore = scoreSlider.getValue();
         if(oudlerCount === 0 && cardScore >= 56) {
             return true;
@@ -929,7 +1049,7 @@ document.addEventListener('DOMContentLoaded', function(){
         return scoreSlider.getValue();
     }
     function getTargetScoreForAttacker() {
-        switch (oudlerSlider.getValue()) {
+        switch (oudlerSelect.getValue()) {
             case 0:
                 return 56;
             case 1:
@@ -947,7 +1067,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     function getContractValue() {
-        let contractIndex = contractSlider.getValue();
+        let contractIndex = contractSelect.getValue();
         const diff = getDiffTargetScore();
         if(diff > 0)
             return (diff + 25) * contractFactor[contractIndex];
@@ -1077,33 +1197,14 @@ document.addEventListener('DOMContentLoaded', function(){
         chelem.applyChelemPoints(teams, scores);
 
         // petit
-        theOne.applyTheOne(teams, scores, contractFactor[contractSlider.getValue()]);
+        theOne.applyTheOne(teams, scores, contractFactor[contractSelect.getValue()]);
 
         return [teams, scores];
     }
 
     // text and slider
     function updateSliderTextValues() {
-
-        oudlerSlider.setValueText(oudlerSlider.getValue())
         scoreSlider.setValueText([scoreSlider.getValue(), 91 - scoreSlider.getValue()]);
-
-        switch (contractSlider.getValue()) {
-            case 0:
-                contractSlider.setValueText("Petite");
-                break;
-            case 1:
-                contractSlider.setValueText("Garde");
-                break;
-            case 2:
-                contractSlider.setValueText("Garde Sans");
-                break;
-            case 3:
-                contractSlider.setValueText("Garde Contre");
-                break;
-            default:
-                contractSlider.setValueText("");
-        }
     }
 
     function updateRecapMessages() {
@@ -1128,18 +1229,18 @@ document.addEventListener('DOMContentLoaded', function(){
 
         if (hasAttackWin()) {
             winText.textContent = "Victoire de l'attaque.";
-            scoreText.textContent = "Score de " + scoreSlider.getValue() + " pour " + oudlerSlider.getValue() + " bouts.";
+            scoreText.textContent = "Score de " + scoreSlider.getValue() + " pour " + oudlerSelect.getValue() + " bouts.";
             summaryText.textContent = "Points pour le preneur : " + attackerScore;
         } else {
             winText.textContent = "Victoire de la défense.";
-            scoreText.textContent =  "Score de " + scoreSlider.getValue() + " pour " + oudlerSlider.getValue() + " bouts.";
+            scoreText.textContent =  "Score de " + scoreSlider.getValue() + " pour " + oudlerSelect.getValue() + " bouts.";
             summaryText.textContent = "Points pour le preneur : " + attackerScore;
         }
     }
 
     function resetSliders() {
-        contractSlider.setValue(0);
-        oudlerSlider.setValue(0);
+        contractSelect.setValue(0);
+        oudlerSelect.setValue(0);
         scoreSlider.setValue(0);
         announcements.resetValues()
 
@@ -1185,7 +1286,6 @@ document.addEventListener('DOMContentLoaded', function(){
     document.getElementById('reset_points').addEventListener('click', function() {
         for(let p of scoreboard.players)
             p.resetScore();
-        
         resetSliders();
     });
 })
