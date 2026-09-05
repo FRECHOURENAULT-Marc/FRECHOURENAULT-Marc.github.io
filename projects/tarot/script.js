@@ -11,20 +11,23 @@ document.addEventListener('DOMContentLoaded', function(){
         };
 
     function roundToMultipleOf(x, multiple) {
+        if(x === 0)
+            return 0;
         return multiple * Math.round(x/multiple);
     }
 
     class Player {
-        constructor(name, playerNumber) {
+        constructor(name) {
             this.nameElement = document.createElement('p');
-            this.nameElement.id = 'p' + playerNumber;
             this.nameElement.style.margin = '0';
             this.nameElement.textContent = name;
-            
+            this.nameElement.style.border = '1px solid black';
+            this.nameElement.style.padding = '0.5rem';
+            this.nameElement.style.maxWidth = '4rem';
+
             this.scoreElement = document.createElement('div');
 
             this.ps = document.createElement('p');
-            this.ps.id = 'ps' + playerNumber + '_0';
             this.ps.style.margin = '0';
             this.ps.style.fontWeight = 'bold';
             this.ps.textContent = '0';
@@ -48,13 +51,12 @@ document.addEventListener('DOMContentLoaded', function(){
             }
         }
 
-        addPoints(points, playerNumber) {
+        addPoints(points) {
             this.scoreList.push(points);
             this.totalScore += points;
             this.ps.textContent = this.totalScore;
 
             const ps = document.createElement('p');
-            ps.id = 'ps' + playerNumber + "-" + this.scoreList.length;
             ps.style.margin = '0';
             ps.textContent = points;
 
@@ -98,7 +100,13 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     }
     class Scoreboard {
+        static instance = null
+
         constructor() {
+            if (Scoreboard.instance)
+                return Scoreboard.instance;
+            Scoreboard.instance = this;
+
             this.element = document.createElement("div");
             this.element.id = 'scoreboard';
 
@@ -124,15 +132,20 @@ document.addEventListener('DOMContentLoaded', function(){
                 const playerName = prompt("Entrez le nom du joueur :");
                 if (playerName) {
 
-                    const nPlayer = new Player(playerName, this.players.length);
+                    const nPlayer = new Player(playerName);
                     scoreboard.addPlayer(nPlayer);
                     announcements.addPlayer(nPlayer);
+                    ChelemManager.getInstance().buildChelemPlayerSelect();
+                    TheOne.getInstance().buildTheOneSelect();
                 }
             });
             remove.addEventListener('click', function() {
                 const playerName = prompt("Entrez le nom du joueur à retirer :");
                 if (playerName) {
                     scoreboard.removePlayer(playerName);
+                    announcements.removePlayer(playerName);
+                    ChelemManager.getInstance().buildChelemPlayerSelect();
+                    TheOne.getInstance().buildTheOneSelect();
                 }
             });
 
@@ -142,9 +155,15 @@ document.addEventListener('DOMContentLoaded', function(){
             this.playerTexts = document.createElement("div");
             this.playerTexts.style.display = 'flex';
             this.playerTexts.style.flexDirection = 'row';
-            this.playerTexts.style.width = '100%';
+            this.playerTexts.style.margin = '0';
 
             this.element.appendChild(this.playerTexts);
+        }
+
+        static getInstance() {
+            if(Scoreboard.instance == null)
+                Scoreboard.instance = new Scoreboard();
+            return Scoreboard.instance;
         }
 
         getPlayerIndexByName(name) {
@@ -156,8 +175,7 @@ document.addEventListener('DOMContentLoaded', function(){
             return -1; // Player not found
         }
 
-        CBPlayerNameClicked(event)
-        {
+        CBPlayerNameClicked(event) {
             const playerIndex = this.getPlayerIndexByName(event.target.textContent);
             if(playerIndex == -1) return;
 
@@ -199,12 +217,15 @@ document.addEventListener('DOMContentLoaded', function(){
         addPlayer(player) {
 
             const pDiv = document.createElement("div");
-            pDiv.style.flex = "1";
             pDiv.style.textAlign = "center";
+            pDiv.style.margin = "0";
             pDiv.appendChild(player.nameElement);
             pDiv.appendChild(player.scoreElement);
 
-            player.nameElement.addEventListener('click', (event) => {this.CBPlayerNameClicked(event);});
+            player.nameElement.addEventListener('click', (event) => {
+                this.CBPlayerNameClicked(event);
+                updateRecapMessages();
+            });
 
             this.playerTexts.appendChild(pDiv);
 
@@ -214,8 +235,8 @@ document.addEventListener('DOMContentLoaded', function(){
         removePlayer(playerName) {
             const index = this.getPlayerIndexByName(playerName);
             if (index !== -1) {
-                this.playerNames.removeChild(this.playerNames.children[index]);
-                this.playerScores.removeChild(this.playerScores.children[index]);
+                this.players = this.players.filter(player => player.name !== index)
+                this.playerTexts.removeChild(this.playerTexts.children[index]);
             }
             this.players = this.players.filter(player => player.name !== playerName);
         }
@@ -229,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function(){
             const playerIndex = this.getPlayerIndexByName(playerName);
             if (playerIndex !== -1) {
                 const player = this.players[playerIndex];
-                player.addPoints(score, playerIndex);
+                player.addPoints(score);
             }
         }
 
@@ -256,19 +277,17 @@ document.addEventListener('DOMContentLoaded', function(){
                 if(this.players[i].role == PLAYER_ROLE.CALLED)
                     this.players[i].setRole(PLAYER_ROLE.DEFENDER);
         }
-        setAttacker(playerIndex)
-        {
+        setAttacker(playerIndex) {
             this.clearAttacker();
             this.players[playerIndex].setRole(PLAYER_ROLE.ATTACKER);
         }
-        setCalled(playerIndex)
-        {
+        setCalled(playerIndex) {
             this.clearCalled();
             this.players[playerIndex].setRole(PLAYER_ROLE.CALLED);
         }
     }
 
-    class PlayerAnnouncementData {
+    class PlayerHandfulData {
         constructor(name, role, value) {
             this.role = role;
             this.value = value;
@@ -282,15 +301,27 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     }
     class AnnouncementManager {
-        constructor()
-        {
-            this.playerAnnouncecements = [];
+
+        static instance = null;
+
+        constructor() {
+            if(AnnouncementManager.instance)
+                return AnnouncementManager.instance;
+
+            AnnouncementManager.instance = this;
+
+            this.playerHandful = [];
             this.playerMiseres = [];
         }
 
-        addPlayer(player)
-        {
-            this.playerAnnouncecements.push(new PlayerAnnouncementData(player.name, PLAYER_ROLE.DEFENDER, 0));
+        static getInstance() {
+            if(AnnouncementManager.instance == null)
+                AnnouncementManager.instance = new AnnouncementManager();
+            return AnnouncementManager.instance;
+        }
+
+        addPlayer(player) {
+            this.playerHandful.push(new PlayerHandfulData(player.name, PLAYER_ROLE.DEFENDER, 0));
             this.playerMiseres.push(new PlayerMisereData(player.name, 0));
 
             const divAnn = document.createElement('div');
@@ -306,16 +337,16 @@ document.addEventListener('DOMContentLoaded', function(){
             divAnn.appendChild(selectMisere);
 
             const option0_1 = document.createElement("option");
-            option0_1.textContent = "Aucune";
+            option0_1.textContent = "❌";
             option0_1.value = "0";
             const optionM1 = document.createElement("option");
-            optionM1.textContent = "Misère Atouts";
+            optionM1.textContent = "🃏";
             optionM1.value = "10";
             const optionM2 = document.createElement("option");
-            optionM2.textContent = "Misère Figures";
+            optionM2.textContent = "👑";
             optionM2.value = "10";
             const optionM3 = document.createElement("option");
-            optionM3.textContent = "Misère Atouts & Figures";
+            optionM3.textContent = "🃏👑";
             optionM3.value = "20";
 
             selectMisere.appendChild(option0_1);
@@ -324,94 +355,108 @@ document.addEventListener('DOMContentLoaded', function(){
             selectMisere.appendChild(optionM3);
 
             //annonces
-            const selectAnnouncement = document.createElement("select");
-            selectAnnouncement.addEventListener("change", (event) => {
-                this.setPlayerAnnouncement(player.name, player.role, parseInt(event.target.value))
+            const selectHandful = document.createElement("select");
+            selectHandful.addEventListener("change", (event) => {
+                this.setPlayerHandful(player.name, player.role, parseInt(event.target.value))
             });
-            divAnn.appendChild(selectAnnouncement);
+            divAnn.appendChild(selectHandful);
 
             const option0_2 = document.createElement("option");
-            option0_2.textContent = "Aucune";
+            option0_2.textContent = "❌";
             option0_2.value = "0";
             const optionP1 = document.createElement("option");
-            optionP1.textContent = "Poignée Simple";
+            optionP1.textContent = "✋x1";
             optionP1.value = "20";
             const optionP2 = document.createElement("option");
-            optionP2.textContent = "Poignée Double";
+            optionP2.textContent = "✋x2";
             optionP2.value = "30";
             const optionP3 = document.createElement("option");
-            optionP3.textContent = "Poignée Triple";
+            optionP3.textContent = "✋x3";
             optionP3.value = "40";
 
-            selectAnnouncement.appendChild(option0_2);
-            selectAnnouncement.appendChild(optionP1);
-            selectAnnouncement.appendChild(optionP2);
-            selectAnnouncement.appendChild(optionP3);
+            selectHandful.appendChild(option0_2);
+            selectHandful.appendChild(optionP1);
+            selectHandful.appendChild(optionP2);
+            selectHandful.appendChild(optionP3);
 
             player.nameElement.parentNode.appendChild(divAnn);
         }
 
-        setPlayerAnnouncement(playerName, playerRole, value)
-        {
-            const data = this.playerAnnouncecements.find(p => p.name === playerName);
+        removePlayer(playerName) {
+            this.playerHandful = this.playerHandful.filter(p => p.name !== playerName);
+            this.playerMiseres = this.playerMiseres.filter(p => p.name !== playerName);
+        }
+
+        setPlayerHandful(playerName, playerRole, value) {
+            const data = this.playerHandful.find(p => p.name === playerName);
             data.value = value;
             data.role = playerRole;
         }
-        setPlayerMiseres(playerName, value)
-        {
+        setPlayerMiseres(playerName, value) {
             const data = this.playerMiseres.find(p => p.name === playerName);
             data.value = value;
         }
-        getAnnouncementValue(playerName)
-        {
-            return this.playerAnnouncecements.find(player => player.name === playerName).value;
+        getHandfulValue(playerName) {
+            return this.playerHandful.find(player => player.name === playerName).value;
         }
-        getMiseresValue(playerName)
-        {
+        getMiseresValue(playerName) {
             return this.playerMiseres.find(player => player.name === playerName).value;
         }
         
-        resetValues()
-        {
+        resetValues() {
             for(let data of this.playerMiseres)
                 this.setPlayerMiseres(data.name, 0);            
-            for(let data of this.playerAnnouncecements)
-                this.setPlayerAnnouncement(data.name, 0, 0);
+            for(let data of this.playerHandful)
+                this.setPlayerHandful(data.name, 0, 0);
         }
 
     }
     class ChelemManager {
-        constructor(scoreboard) {
-            this.scoreboard = scoreboard;
-            
+
+        static instance = null;
+
+        constructor() {
+            if (ChelemManager.instance)
+                return ChelemManager.instance;
+            ChelemManager.instance = this;
+        }
+
+        init() {
             this.div = document.createElement("div");
             this.div.style.display = "flex";
             this.div.style.flexDirection = "row";
+            this.div.style.alignItems = "center";
             main.appendChild(this.div)
-            
-            const p = document.createElement("p");
-            p.textContent = "Chelem";
-            this.div.appendChild(p)
-            
-            this.selectValue = document.createElement("select");
-            this.div.appendChild(this.selectValue);
-            
-            this.selectPlayer = document.createElement("select");
-            this.selectPlayer.addEventListener("click", (event) => {
-                this.buildChelemPlayerSelect(this.scoreboard.players)
-            })
 
+            const p1 = document.createElement("p");
+            p1.textContent = "Chelem pour";
+            p1.style.margin = "0";
+            p1.style.marginRight = "0.5rem";
+            this.div.appendChild(p1)
+
+            this.selectPlayer = document.createElement("select");
+            this.selectPlayer.style.marginRight = "0.5rem";
+            this.selectPlayer.addEventListener("change", (event) => {
+                updateRecapMessages();
+            })
             this.div.appendChild(this.selectPlayer);
+
+
+            this.selectValue = document.createElement("select");
+            this.selectValue.addEventListener("change", (event) => {
+                updateRecapMessages();
+            })
+            this.div.appendChild(this.selectValue);
 
             const option0 = document.createElement("option");
             option0.textContent = "Aucun";
-            option0.value = "0";            
+            option0.value = "0";
             const option1 = document.createElement("option");
             option1.textContent = "Réussi non annoncé";
-            option1.value = "200";           
+            option1.value = "200";
             const option2 = document.createElement("option");
             option2.textContent = "Réussi et annoncé";
-            option2.value = "400";            
+            option2.value = "400";
             const option3 = document.createElement("option");
             option3.textContent = "Non réussi";
             option3.value = "-200";
@@ -425,55 +470,193 @@ document.addEventListener('DOMContentLoaded', function(){
             option0_2.textContent = "Personne";
             option0_2.value = "0";
             this.selectPlayer.appendChild(option0_2);
-            
-            this.buildChelemPlayerSelect(this.scoreboard.players);
+
+            this.buildChelemPlayerSelect();
+        }
+
+        static getInstance() {
+            return ChelemManager.instance;
+        }
+
+        buildChelemPlayerSelect() {
+            this.selectPlayer.innerHTML = ''; // clear
+
+            this.selectPlayer.appendChild(new Option("Personne", "0"));
+
+            for (const player of Scoreboard.getInstance().players) {
+                this.selectPlayer.appendChild(
+                    new Option(player.name, player.name)
+                );
+            }
         }
         
-        buildChelemPlayerSelect(players) {
-            for(let i = 1; i < this.selectPlayer.length; i++)
-            {
-                let opt = this.selectPlayer[i];
-                this.selectPlayer.removeChild(opt);
-            }
-            
-            for(let i = 0; i < players.length; i++)
-            {
-                let opt = document.createElement("option");
-                opt.textContent = players[i].name;
-                opt.value = players[i].name;
-                this.selectPlayer.appendChild(opt);
-            }
-        }
-        
-        getValue()
-        {
+        getValue() {
             return this.selectValue.value;
         }
         
-        getValuePlayer()
-        {
+        getValuePlayerName() {
             return this.selectPlayer.value;
         }
-        
-        applyChelemPoints(team, otherTeam)
-        {
-           const teamFac = (hasPlayerWin(team[0]) ? 1 : -1);
-           const playerName = this.getValuePlayer();
-           let isFirstTeam = false;
-           for(let i = 0; i < team.length; i++)
-           {
-               if(playerName == team[i].name)
-                   isFirstTeam = true;
-           }           
-           for(let i = 0; i < otherTeam.length; i++)
-           {
-               if(playerName == otherTeam[i].name)
-                   isFirstTeam = false;
-           }
-           
+
+        applyChelemPoints(teams, scores) {
+            const scoreboard = Scoreboard.getInstance();
+            const pIndex = scoreboard.getPlayerIndexByName(this.getValuePlayerName())
+            const player = scoreboard.players[pIndex];
+            const value = parseInt(this.getValue());
+
+            if (value === 0)
+                return;
+            if (player === undefined)
+                return;
+
+            let team;
+            let otherTeam;
+            let teamScore;
+            let otherScore;
+
+            for(let i = 0; i < teams.length; i++)
+            {
+                for(let j = 0; j < teams[i].length; j++)
+                {
+                    if(teams[i][j].name !== player.name) continue;
+                    let idTeam = i;
+                    let idOther = -1;
+                    if(i === 0)
+                        idOther = 1;
+                    else
+                        idOther = 0;
+
+                    team = teams[idTeam];
+                    otherTeam = teams[idOther] ;
+                    teamScore = scores[idTeam];
+                    otherScore = scores[idOther];
+                    break;
+                }
+            }
+
+            for(let i = 0; i < team.length; i++) {
+                if(player.name !== team[i].name) continue;
+                teamScore[i] += value;
+                break;
+            }
+            for(let i = 0; i < otherTeam.length; i++)
+                otherScore[i] -= value/otherTeam.length;
+        }
+    }
+    class TheOne {
+
+        static instance = null;
+
+        constructor() {
+            if(TheOne.instance)
+                return TheOne.instance;
+            TheOne.instance = this;
+        }
+
+        static getInstance() {
+            return TheOne.instance;
+        }
+
+        init() {
+            this.scoreboard = Scoreboard.getInstance();
+
+            this.div = document.createElement("div");
+            this.div.style.display = "flex";
+            this.div.style.flexDirection = "row";
+            this.div.style.alignItems = "center";
+            main.appendChild(this.div)
+
+            const p = document.createElement("p");
+            p.textContent = "Petit au bout pour";
+            p.style.margin = "0";
+            p.style.marginRight = "0.5rem";
+            this.div.appendChild(p)
+
+            this.selectPlayer = document.createElement("select");
+            this.selectPlayer.addEventListener("change", (event) => {
+                updateRecapMessages();
+            })
+            this.div.appendChild(this.selectPlayer);
+
+            const option0_2 = document.createElement("option");
+            option0_2.textContent = "Personne";
+            option0_2.value = "0";
+            this.selectPlayer.appendChild(option0_2);
+
+            this.buildTheOneSelect();
+        }
+
+        buildTheOneSelect() {
+            this.selectPlayer.innerHTML = ''; // clear
+
+            this.selectPlayer.appendChild(new Option("Personne", "0"));
+
+            for (const player of Scoreboard.getInstance().players) {
+                this.selectPlayer.appendChild(
+                    new Option(player.name, player.name)
+                );
+            }
+        }
+
+        getPlayerName() {
+            return this.selectPlayer.value;
+        }
+
+        applyTheOne(teams, scores, contractFactor) {
+            const playerName = this.getPlayerName();
+            if(playerName === "0")
+                return;
+
+            console.log("player name ", playerName);
+
+            let otherTeam;
+            let teamScore;
+            let playerScoreIndex;
+            let otherScore;
+
+            for(let i = 0; i < teams.length; i++)
+            {
+                for(let j = 0; j < teams[i].length; j++){
+                    if(playerName !== teams[i][j].name) continue;
+
+                    teamScore = scores[i];
+                    playerScoreIndex = j;
+                    otherTeam = teams[i] === teams[0] ? teams[1] : teams[0];
+                    otherScore = scores[i] === scores[0] ? scores[1] : scores[0];
+                }
+            }
+
+            const theOneValue = 10 * contractFactor;
+
+            teamScore[playerScoreIndex] += theOneValue * otherTeam.length;
+            for(let i = 0; i < otherTeam.length; i++) {
+                otherScore[i] -= 10 * contractFactor;
+            }
         }
     }
 
+    class NumberInput {
+        constructor(elementID, min, max, step = 1, initialValue = 0, parentNode = null){
+            this.input = document.createElement("input");
+            if(parentNode === null || parentNode === undefined)
+                document.body.querySelector("main").appendChild(this.input);
+            else
+                parentNode.appendChild(this.input);
+
+            this.input.type = "number";
+            this.input.min = min.toString();
+            this.input.max = max.toString();
+            this.input.step = step.toString();
+            this.input.value = initialValue.toString();
+        }
+
+        getValue() {
+            return parseInt(this.input.value);
+        }
+        setValue(newValue) {
+            this.input.value = newValue.toString();
+        }
+    }
     class Slider {
         constructor(elementId, name, min, max, step = 1, initialValue = 0) {
             this.divElement = document.createElement("div");
@@ -503,7 +686,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
             this.label = document.createElement("label");
             this.label.htmlFor = elementId;
-            this.label.style = "display: block; margin-bottom: 10px";
+            this.label.style.display = "flex";
+            this.label.style.alignItems = "center";
+            this.label.style.textAlign = "center";
+            this.label.style.gap = "0.5rem";
+
             divTop.appendChild(this.label);
 
             this.span = [];
@@ -534,6 +721,7 @@ document.addEventListener('DOMContentLoaded', function(){
             this.input.step = step.toString();
             this.input.value = initialValue.toString();
             this.input.style.width = '100%';
+            this.input.style.margin = '0';
             this.input.addEventListener('input', updateRecapMessages);
             this.divElement.appendChild(this.input);
 
@@ -577,6 +765,7 @@ document.addEventListener('DOMContentLoaded', function(){
     function createButton(id, text) {
         const button = document.createElement("button")
         button.id = id;
+        button.style.marginRight = "0.5rem";
         button.textContent = text;
         main.appendChild(button);
     }
@@ -584,29 +773,88 @@ document.addEventListener('DOMContentLoaded', function(){
     function createRulesText() {
         let div = document.createElement("div");
         div.id = "rules_text";
+        div.style.margin = "0";
         main.appendChild(div);
 
         let p1 = document.createElement("p");
         div.appendChild(p1);
-        p1.innerHTML = "Les attaquants ne peuvent pas annoncer de misères, s'ils le font elles seront non comptabilisées.";
-        p1.innerHTML += '</br>';
         p1.innerHTML += "Le prenant ne peut appeler qu'à 5 joueurs.";
         p1.innerHTML += '</br>';
-        p1.innerHTML += "Lorsqu'une annonce est faite, elle engage l'équipe de l'annonceur (règlement FFT).";
+        p1.innerHTML += "Valeurs des contrats selon la FFT: 25, 50, 100, 150.";
         p1.innerHTML += '</br>';
-        p1.innerHTML += "Valeurs des contrats : 25, 50, 100, 150.";
+        p1.innerHTML += 'Une "annonce" est définie comme un pseudo contrat supplémentaire qui doit être annoncé au cours du premier tour.';
+        p1.innerHTML += '</br>';
+        p1.innerHTML += "Une annonce n'affecte pas les coéquipiers de l'annonceur, uniquement les adervsaires et l'annonceur.";
+        p1.innerHTML += '</br>';
+        p1.innerHTML += "La valeur d'une poignée est comptée comme 'valeur de la poignée' x 'nombre d'aversaires'.";
+        p1.innerHTML += '</br>';
+        p1.innerHTML += "Pour les poignées, il couviendra de montrer le nombre d'atouts corresdpondant à la poignée avavnt que l'annonceur ne joue sa première carte. ";
+        p1.innerHTML += "L'excuse ne peut être montrée pour la poignée que si l'annonceur n'a pas d'autre atout à montrer. ";
+        p1.innerHTML += "Le nombre d'atouts nécessaires pour annoncer des poignées change en fonction du nombre de joueurs et des règles appliquées, à vous de choisir.";
+        p1.innerHTML += '</br>';
+        p1.innerHTML += "Les misères sont indépendantes du résultat de la partie, ce sont des points garantis.";
+        p1.innerHTML += '</br>';
+        p1.innerHTML += "Le petit au bout est indépendant du résultat de la partie. Il donne à son preneur '10' x 'facteur du contrat' x 'taille de l'équipe adverse'.";
         p1.innerHTML += '</br>';
         p1.innerHTML += "Valeurs des annonces (misères) : 10, 10, 20.";
         p1.innerHTML += '</br>';
-        p1.innerHTML += "Valeurs des annonces (poignées) : 20, 30, 40.";        
+        p1.innerHTML += "Valeurs des annonces (poignées) : 20, 30, 40.";
         p1.innerHTML += '</br>';
-        p1.innerHTML += "Valeurs des Chelems : -200(raté), 200(non annoncé), 400(réussi).";        
+        p1.innerHTML += "Valeurs des Chelems : -200(raté), 200(non annoncé), 400(réussi).";
         p1.innerHTML += '</br>';
         p1.innerHTML += "Un Chelem n'affecte pas les coéquipiers de l'annonceur.";
+        p1.innerHTML += '</br>';
+        p1.innerHTML += "Toutes la valeurs décrites sont arrondies en fonction du nombre de joueurs et de la situation.";
         p1.innerHTML += '</br>';
         p1.innerHTML += "Les règles présentées sont vouées à être modifiées.";
     }
 
+    function createCustomRulesInputs() {
+
+        const div = document.createElement("div");
+        document.querySelector("main").appendChild(div);
+
+        const p = document.createElement("p");
+        div.appendChild(p);
+        p.style.margin = "0";
+        p.textContent = "Facteur des contrats (la valeur de la mise est 25)";
+
+        const divInputs = document.createElement("div");
+        div.appendChild(divInputs);
+        divInputs.id = 'contract_factors';
+        divInputs.style.display = "flex";
+        divInputs.style.flexDirection = "row";
+
+        const divInputLabel = [];
+        for(let i = 0; i < 4; i++) {
+            const nDiv = document.createElement("div");
+            divInputs.appendChild(nDiv);
+
+            nDiv.style.display = "flex";
+            nDiv.style.flexDirection = "column";
+            nDiv.style.textAlign = "center";
+            nDiv.style.width = "100px";
+
+            const p = document.createElement("p");
+            p.style.margin = "0";
+            nDiv.appendChild(p);
+            divInputLabel.push(nDiv);
+        }
+
+        divInputLabel[0].children[0].textContent = "Petite/Pousse"
+        const takeFacInput = new NumberInput('take_fac', 1, 10, 1, 1, divInputLabel[0]);
+        divInputLabel[1].children[0].textContent = "Garde"
+        const GuardFacInput = new NumberInput('guard_fac', 1, 10, 1, 2, divInputLabel[1]);
+        divInputLabel[2].children[0].textContent = "Garde sans"
+        const GuardWFacInput = new NumberInput('guard_without_fac', 1, 10, 1, 4, divInputLabel[2]);
+        divInputLabel[3].children[0].textContent = "Garde contre"
+        const GuardAFacInput = new NumberInput('guard_against_fac', 1, 10, 1, 6, divInputLabel[3]);
+
+        return [takeFacInput, GuardFacInput, GuardWFacInput, GuardAFacInput];
+    }
+
+    const chelem = new ChelemManager();
+    const theOne = new TheOne();
     const scoreboard = new Scoreboard();
     const announcements = new AnnouncementManager();
 
@@ -615,18 +863,34 @@ document.addEventListener('DOMContentLoaded', function(){
     const oudlerSlider = new Slider('oudler_slider', 'Bouts', 0, 3, 1, 0);
     const scoreSlider = new Slider('score_slider', ["Attaque", "Défense"], 0, 91, 1, 0);
 
-    createTexts();
+    chelem.init(scoreboard);
+    theOne.init(scoreboard);
 
-    const chelem = new ChelemManager(scoreboard);
+    createTexts();
     
     createButton("add_points", "Appliquer les points");
     createButton("reset_points", "Repartir de 0");
 
     createRulesText();
 
+    const factorsInputs = createCustomRulesInputs();
+    document.getElementById('contract_factors').addEventListener('click', function() {
+        for(let i = 0; i < factorsInputs.length; i++) {
+            contractFactor[i] = factorsInputs[i].getValue();
+        }
+    })
+
     const winText = document.getElementById("win_text");
     const scoreText = document.getElementById('score_text');
     const summaryText = document.getElementById('summary_text');
+
+    for(let i = 0; i < 5; i++) {
+        let nPlayer = new Player("Joueur"+(i+1));
+        scoreboard.addPlayer(nPlayer);
+        announcements.addPlayer(nPlayer);
+        chelem.buildChelemPlayerSelect();
+        theOne.buildTheOneSelect();
+    }
 
     contractSlider.setValue(0)
     oudlerSlider.setValue(0);
@@ -661,27 +925,164 @@ document.addEventListener('DOMContentLoaded', function(){
         return false;
     }
 
-    function getExtraCardScore() {
+    function getRoundScore() {
+        return scoreSlider.getValue();
+    }
+    function getTargetScoreForAttacker() {
         switch (oudlerSlider.getValue()) {
             case 0:
-                return scoreSlider.getValue() - 56;
+                return 56;
             case 1:
-                return scoreSlider.getValue() - 51;
+                return 51;
             case 2:
-                return scoreSlider.getValue() - 41;
+                return 41;
             case 3:
-                return scoreSlider.getValue() - 36;
+                return 36;
             default:
                 return 0;
         }
     }
-
-    function getContractAbsValue() {
-        let extraScore = getExtraCardScore();
-        let contractIndex = contractSlider.getValue();
-        return contractFactor[contractIndex] * (25 + Math.abs(extraScore));
+    function getDiffTargetScore() {
+        return getRoundScore() - getTargetScoreForAttacker();
     }
 
+    function getContractValue() {
+        let contractIndex = contractSlider.getValue();
+        const diff = getDiffTargetScore();
+        if(diff > 0)
+            return (diff + 25) * contractFactor[contractIndex];
+        else
+            return (diff - 25) * contractFactor[contractIndex];
+    }
+
+    function addContractToPlayer(team, scores, contractValue) {
+
+        const teamFac = hasPlayerWin(team[0]) ? 1 : -1 ;
+
+        for(let player of team) {
+            switch(player.role)
+            {
+                case PLAYER_ROLE.DEFENDER:
+                {
+                    let contractRepartition = 0;
+                    if(scoreboard.hasCalledDefined())
+                        contractRepartition = teamFac*contractValue*1.5/team.length;
+                    else
+                        contractRepartition = teamFac*contractValue/team.length;
+                    scores.push(contractRepartition);
+                    break;
+                }
+                case PLAYER_ROLE.CALLED:
+                {
+                    const contractRepartition = teamFac*contractValue/2;
+                    scores.push(contractRepartition);
+                    break;
+                }
+                case PLAYER_ROLE.ATTACKER:
+                {
+                    const contractRepartition = teamFac*contractValue;
+                    scores.push(contractRepartition);
+                    break;
+                }
+            }
+
+        }
+    }
+
+    function ComputePoints() {
+
+        const scoreboard = Scoreboard.getInstance();
+        const announcements = AnnouncementManager.getInstance();
+        const chelem = ChelemManager.getInstance();
+        const theOne = TheOne.getInstance();
+
+        if(scoreboard == null || announcements == null ||chelem == null)
+            return;
+
+        let contractValue = getContractValue();
+        let contractAbsValue = Math.abs(contractValue);
+        let defenderCount = 0;
+        for (const player of scoreboard.players) {
+            if(player.role == PLAYER_ROLE.DEFENDER)
+                defenderCount++;
+        }
+
+        if(scoreboard.hasCalledDefined())
+            contractAbsValue = roundToMultipleOf(contractAbsValue, 6);
+        else
+            contractAbsValue = roundToMultipleOf(contractAbsValue, defenderCount);
+
+        const loseTeam = [];
+        const winTeam = [];
+        for(const player of scoreboard.players) {
+            if(hasPlayerWin(player))
+            {
+                winTeam.push(player);
+                continue;
+            }
+            loseTeam.push(player);
+        }
+
+        const loseScores = [];
+        const winScores = [];
+        const teams = [loseTeam, winTeam];
+        const scores  = [loseScores, winScores];
+
+        //Contrats
+        if(loseTeam.length > 0)
+            addContractToPlayer(loseTeam, loseScores, contractAbsValue);
+        if(winTeam.length > 0)
+            addContractToPlayer(winTeam, winScores, contractAbsValue);
+
+        //Annonces
+        // Poignées perdues
+        for(let i = 0; i < loseTeam.length; i++) {
+            let player = loseTeam[i];
+            const handful = announcements.getHandfulValue(player.name);
+            loseScores[i] -= handful*winTeam.length;
+            for(j = 0; j < winTeam.length; j++) {
+                winScores[j] += handful;
+            }
+        }
+        // Poignées réussies
+        for(let i = 0; i < winTeam.length; i++) {
+            let player = winTeam[i];
+            const handful = announcements.getHandfulValue(player.name);
+            winScores[i] += handful*(loseTeam.length !== 0 ? loseTeam.length : 1);
+            for(let j = 0; j < loseTeam.length; j++) {
+                loseScores[j] -= handful;
+            }
+        }
+        // Misères
+        for(let i = 0; i < 2; i++) {
+            let team = teams[i];
+            let score = scores[i];
+            let otherTeam = ((teams[i] === teams[0]) ? teams[1] : teams[0])
+            let otherScore = ((scores[i] === scores[0]) ? scores[1] : scores[0])
+            for(let j = 0; j < team.length; j++) {
+                let player = team[j];
+                let misere = announcements.getMiseresValue(player.name);
+                if(scoreboard.hasCalledDefined())
+                    misere = roundToMultipleOf(misere, 6)
+                else
+                    misere = roundToMultipleOf(misere, (otherTeam.length !== 0 ? otherTeam.length : 1));
+                score[j] += misere;
+                for(let k = 0; k < otherTeam.length; k++) {
+                    otherScore[k] -= misere/ (otherTeam.length !== 0 ? otherTeam.length : 1);
+                }
+            }
+        }
+
+        // Chelem
+        chelem.applyChelemPoints(teams, scores);
+
+        // petit
+        theOne.applyTheOne(teams, scores, contractFactor[contractSlider.getValue()]);
+
+        return [teams, scores];
+    }
+
+    // text and slider
     function updateSliderTextValues() {
 
         oudlerSlider.setValueText(oudlerSlider.getValue())
@@ -706,19 +1107,33 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     function updateRecapMessages() {
+
         updateSliderTextValues();
+
+        const retValue = ComputePoints();
+
+        let attackerScore = 0;
+        if(retValue !== undefined)
+        {
+            const [teams, scores] = retValue;
+            for(let i = 0; i < teams.length; i++) {
+                for(let j = 0; j < teams[i].length; j++) {
+                    const player = teams[i][j];
+                    if(player.role !== PLAYER_ROLE.ATTACKER) continue;
+                    attackerScore = scores[i][j];
+                    break;
+                }
+            }
+        }
 
         if (hasAttackWin()) {
             winText.textContent = "Victoire de l'attaque.";
             scoreText.textContent = "Score de " + scoreSlider.getValue() + " pour " + oudlerSlider.getValue() + " bouts.";
-            summaryText.textContent = "Points gagnés pour l'attaque : " + getContractAbsValue()
-                + ", réussie de " + getExtraCardScore();
-
+            summaryText.textContent = "Points pour le preneur : " + attackerScore;
         } else {
             winText.textContent = "Victoire de la défense.";
             scoreText.textContent =  "Score de " + scoreSlider.getValue() + " pour " + oudlerSlider.getValue() + " bouts.";
-            summaryText.textContent = "Points perdus pour l'attaque : " + getContractAbsValue()
-                + ", chutée de " + -getExtraCardScore();
+            summaryText.textContent = "Points pour le preneur : " + attackerScore;
         }
     }
 
@@ -727,7 +1142,7 @@ document.addEventListener('DOMContentLoaded', function(){
         oudlerSlider.setValue(0);
         scoreSlider.setValue(0);
         announcements.resetValues()
-        
+
         document.querySelectorAll("select").forEach(function(el) {
             el.selectedIndex = 0;
         })
@@ -736,46 +1151,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
         winText.textContent = "";
         scoreText.textContent = "Déplace les jauges pour obtenir un score.";
-        summaryText.textContent = "";
-    }
-
-    function addContractToPlayer(team, scores, contractAbsValue) {
-
-        const teamFac = hasPlayerWin(team[0]) ? 1 : -1 ;
-
-        for(let player of team) {
-            switch(player.role)
-            {
-                case PLAYER_ROLE.DEFENDER:
-                {
-                    let contractRepartition = 0;
-                    if(scoreboard.hasCalledDefined())
-                        contractRepartition = teamFac*contractAbsValue*1.5/team.length;
-                    else
-                        contractRepartition = teamFac*contractAbsValue/team.length;
-                    scores.push(contractRepartition);
-                    break;
-                }
-                case PLAYER_ROLE.CALLED:
-                {
-                    const contractRepartition = teamFac*contractAbsValue/2;
-                    scores.push(contractRepartition);
-                    break;
-                }
-                case PLAYER_ROLE.ATTACKER:
-                {
-                    const contractRepartition = teamFac*contractAbsValue;
-                    scores.push(contractRepartition);
-                    break;
-                }
-            }
-
-        }
     }
 
     //Add points
     document.getElementById('add_points').addEventListener('click', function() {
-        if(scoreboard.hasAttackerDefined() == false)
+        if(scoreboard.hasAttackerDefined() === false)
         {
             alert("Veuillez définir un attaquant avant d'appliquer les points.");
             return;
@@ -786,166 +1166,15 @@ document.addEventListener('DOMContentLoaded', function(){
             return;
         }
 
-        let contractAbsValue = getContractAbsValue();
-        let defenderCount = 0;
-        for (const player of scoreboard.players) {
-            if(player.role == PLAYER_ROLE.DEFENDER)
-                defenderCount++;
-        }
 
-        if(scoreboard.hasCalledDefined())
-            contractAbsValue = roundToMultipleOf(contractAbsValue, 6);
-        else
-            contractAbsValue = roundToMultipleOf(contractAbsValue, defenderCount);
-
-        const loseTeam = [];
-        const winTeam = [];
-        for(const player of scoreboard.players) {
-            if(hasPlayerWin(player))
+        // add to score
+        const [teams, scores] = ComputePoints();
+        for(let i = 0; i < teams.length; i++)
+        {
+            for(let j = 0; j < teams[i].length; j++)
             {
-                winTeam.push(player);
-                continue;
+                scoreboard.addPlayerScore(teams[i][j].name, scores[i][j]);
             }
-            loseTeam.push(player);
-        }
-
-        const loseScores = [];
-        // for(let player of loseTeam) {
-        //
-        //   switch(player.role)
-        //   {
-        //     case PLAYER_ROLE.DEFENDER:
-        //     {
-        //       let contractRepartition = 0;
-        //       if(scoreboard.hasCalledDefined())
-        //         contractRepartition = -contractAbsValue*1.5/loseTeam.length;
-        //       else
-        //         contractRepartition = -contractAbsValue/loseTeam.length;
-        //       loseScores.push(contractRepartition);
-        //       break;
-        //     }
-        //     case PLAYER_ROLE.CALLED:
-        //     {
-        //       const contractRepartition = -contractAbsValue/2;
-        //       loseScores.push(contractRepartition);
-        //       break;
-        //     }
-        //     case PLAYER_ROLE.ATTACKER:
-        //     {
-        //       let contractRepartition = 0;
-        //       if(scoreboard.hasCalledDefined())
-        //         contractRepartition = -contractAbsValue;
-        //       else
-        //         contractRepartition = -contractAbsValue;
-        //       loseScores.push(contractRepartition);
-        //       break;
-        //     }
-        //   }
-        //
-        // }
-
-        const winScores = [];
-        // for(let player of winTeam) {
-        //   switch(player.role)
-        //   {
-        //     case PLAYER_ROLE.DEFENDER:
-        //     {
-        //       let contractRepartition = 0;
-        //       if(scoreboard.hasCalledDefined())
-        //         contractRepartition = contractAbsValue*1.5/winTeam.length;
-        //       else
-        //         contractRepartition = contractAbsValue/winTeam.length;
-        //       winScores.push(contractRepartition);
-        //       break;
-        //     }
-        //     case PLAYER_ROLE.CALLED:
-        //     {
-        //       const contractRepartition = contractAbsValue/2;
-        //       winScores.push(contractRepartition);
-        //       break;
-        //     }
-        //     case PLAYER_ROLE.ATTACKER:
-        //     {
-        //       let contractRepartition = 0;
-        //       if(scoreboard.hasCalledDefined())
-        //         contractRepartition = contractAbsValue;
-        //       else
-        //         contractRepartition = contractAbsValue;
-        //       winScores.push(contractRepartition);
-        //       break;
-        //     }
-        //   }
-        // }
-
-        addContractToPlayer(loseTeam, loseScores, contractAbsValue);
-        addContractToPlayer(winTeam, winScores, contractAbsValue);
-
-        //Annonces
-        // on retire les points perdus car annonces ratees
-        let annPointsForWinners = 0;
-        for(let player of loseTeam) {
-            const annValue = announcements.getAnnouncementValue(player.name);
-            annPointsForWinners += annValue*winTeam.length*loseTeam.length;
-        }
-        for(i = 0; i < loseTeam.length; i++) {
-            loseScores[i] += -annPointsForWinners/loseTeam.length
-        }
-        for(i = 0; i < winTeam.length; i++) {
-            winScores[i] += annPointsForWinners/winTeam.length;
-        }
-        // on vole les points car annonces reussis
-        let annPointsToStealToLosers = 0;
-        for(let player of winTeam) {
-            const annValue = announcements.getAnnouncementValue(player.name);
-            annPointsToStealToLosers += annValue*winTeam.length*loseTeam.length;
-        }
-        for(i = 0; i < loseTeam.length; i++) {
-            loseScores[i] += -annPointsToStealToLosers/loseTeam.length;
-        }
-        for(i = 0; i < winTeam.length; i++) {
-            winScores[i] += annPointsToStealToLosers/winTeam.length;
-        }
-        
-        // Miseres
-        let attackerBonusPoints = 0;
-        if(loseTeam[0].role == PLAYER_ROLE.DEFENDER)
-        {
-            for(i = 0; i < loseTeam.length; i++) {
-                let player = loseTeam[i];
-                const misereValue = announcements.getMiseresValue(player.name);
-                attackerBonusPoints += misereValue;
-                loseScores[i] -= misereValue;
-            }
-        }    
-        if(winTeam[0].role == PLAYER_ROLE.DEFENDER)
-        {
-            for(i = 0; i < winTeam.length; i++) {
-                let player = winTeam[i];
-                const misereValue = announcements.getMiseresValue(player.name);
-                attackerBonusPoints -= misereValue;
-                winScores[i] += misereValue;
-            }
-        }
-        for(i = 0; i < loseTeam.length; i++) {
-            let p = loseTeam[i];
-            if(p.role != PLAYER_ROLE.ATTACKER) continue;
-            loseScores[i] += attackerBonusPoints;
-        }        
-        for(i = 0; i < winTeam.length; i++) {
-            let p = winTeam[i];
-            if(p.role != PLAYER_ROLE.ATTACKER) continue;
-            winScores[i] += attackerBonusPoints;
-        }
-        
-
-        // add to scoreboard
-        for(i = 0; i < loseTeam.length; i++) {
-            const player = loseTeam[i];
-            scoreboard.addPlayerScore(player.name, loseScores[i]);
-        }
-        for(i = 0; i < winTeam.length; i++) {
-            const player = winTeam[i];
-            scoreboard.addPlayerScore(player.name, winScores[i]);
         }
 
         resetSliders();
