@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function(){
             this.ps.textContent = 0;
             while(this.scoreElement.children.length > 1)
             {
-                this.scoreElement.removeChild(this.scoreElement.lastChild);
+                this.scoreElement.removeChild(this.scoreElement.firstChild);
             }
         }
 
