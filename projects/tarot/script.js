@@ -850,6 +850,7 @@ document.addEventListener('DOMContentLoaded', function(){
             this.text = document.createElement("p");
             this.divElement.appendChild(this.text);
             this.text.textContent = name;
+            this.text.style.width = "10rem";
             this.text.classList.add("font_heavy");
 
             this.select = document.createElement("select");
@@ -860,9 +861,8 @@ document.addEventListener('DOMContentLoaded', function(){
             this.divElement.appendChild(this.select);
             this.select.classList.add("font_heavy");
             this.select.classList.add("white_dark");
-            this.select.style.width = `calc(100% - 9.5rem)`;
-            this.select.style.position = "fixed";
-            this.select.style.left = "8rem";
+            this.select.style.width = `100%`;
+            this.select.style.marginRight = `0.5rem`;
 
             for(let i = 0; i < valueNames.length; i++) {
                 const option = document.createElement("option");
@@ -1064,11 +1064,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
     chelem.init(scoreboard);
     theOne.init(scoreboard);
-
-    createTexts();
     
     createButton("add_points", "✅ Valider");
     createButton("reset_points", "🔄 Nouvelle partie");
+
+    createTexts();
 
     createRulesText();
 
