@@ -2,8 +2,48 @@
     --clickable_dark: #5c5c5c;
     --clickable_light2: #c7c7c7;
     --clickable_light: #f2f2f2;
+
+    --border_radius: 4px;
+
+
     --orange: #eb5e28;
     --slider-height: 10px;
+}
+
+.white_dark {
+    color: white;
+    background-color: var(--clickable_dark);
+    border : none;
+    border-radius: var(--border_radius);
+}
+.white_orange {
+    color: white;
+    background-color: var(--orange);
+    border : none;
+    border-radius: var(--border_radius);
+}
+.black_light {
+    color: black;
+    background-color: var(--clickable_light);
+    border : none;
+    border-radius: var(--border_radius);
+}
+
+.font_heavy {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+.font_large {
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+.font_big {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+.font_medium {
+    font-weight: bold;
+    font-size: 1rem;
 }
 
 body {
@@ -19,11 +59,6 @@ button {
     margin: 0.5rem;
     min-width: 3rem;
     min-height: 2rem;
-
-    background-color: var(--clickable_dark);
-    color: var(--clickable_light);
-
-    border-radius: 4px;
 }
 
 select {
@@ -31,15 +66,16 @@ select {
     margin-bottom: 0.25rem;
     min-width: 3rem;
     min-height: 2rem;
-
-    color: white;
-    background-color: #5c5c5c;
-
-    border-radius: 4px;
 }
 option {
     margin: 0.5rem;
 }
+li {
+    margin: 0.5rem;
+    min-width: 3rem;
+    min-height: 2rem;
+}
+
 p {
     margin: 0.5rem;
     padding: 0;

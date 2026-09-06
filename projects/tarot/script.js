@@ -19,20 +19,17 @@ document.addEventListener('DOMContentLoaded', function(){
     class Player {
         constructor(name) {
             this.nameElement = document.createElement('p');
-            this.nameElement.style.margin = '0.25rem';
             this.nameElement.textContent = name;
-            this.nameElement.style.borderRadius = '4px';
+            this.nameElement.classList.add("white_orange");
+            this.nameElement.style.margin = '0.25rem';
             this.nameElement.style.padding = '0.5rem';
-            this.nameElement.style.color = 'white';
-            this.nameElement.style.backgroundColor = '#eb5e28';
             this.nameElement.style.fontWeight = 'bold';
 
             this.scoreElement = document.createElement('div');
 
             this.ps = document.createElement('p');
+            this.ps.classList.add("font_heavy");
             this.ps.style.margin = '0';
-            this.ps.style.fontWeight = 'bold';
-            this.ps.style.fontSize = '1.5rem';
             this.ps.textContent = '0';
 
             this.scoreElement.appendChild(this.ps);
@@ -67,30 +64,30 @@ document.addEventListener('DOMContentLoaded', function(){
         }
 
         setRole(role) {
-            this.nameElement.style.backgroundColor = 'var(--orange)';
+            this.nameElement.parentNode.style.backgroundColor = 'var(--clickable_light)';
 
             switch (role) {
                 case PLAYER_ROLE.DEFENDER:
                 {
-                    this.nameElement.style.backgroundColor = 'var(--orange)';
+                    this.nameElement.parentNode.style.backgroundColor = 'var(--clickable_light)';
                     this.role = PLAYER_ROLE.DEFENDER;
                     break;
                 }
                 case PLAYER_ROLE.CALLED:
                 {
-                    this.nameElement.style.backgroundColor = 'blue';
+                    this.nameElement.parentNode.style.backgroundColor = '#a1c5ff';
                     this.role = PLAYER_ROLE.CALLED;
                     break;
                 }
                 case PLAYER_ROLE.ATTACKER:
                 {
-                    this.nameElement.style.backgroundColor = 'red';
+                    this.nameElement.parentNode.style.backgroundColor = '#ffb0b0';
                     this.role = PLAYER_ROLE.ATTACKER;
                     break;
                 }
                 default:
                 {
-                    this.nameElement.style.backgroundColor = 'var(--orange)';
+                    this.nameElement.parentNode.style.backgroundColor = 'var(--clickable_light)';
                     this.role = PLAYER_ROLE.DEFENDER;
                     break;
                 }
@@ -113,14 +110,13 @@ document.addEventListener('DOMContentLoaded', function(){
             this.managePlayerDiv.style.display = 'flex';
             this.managePlayerDiv.style.flexDirection = 'row';
             this.managePlayerDiv.style.alignItems = 'center';
+            this.managePlayerDiv.style.justifyContent = 'center';
             this.element.appendChild(this.managePlayerDiv);
 
             const add = document.createElement("p");
             add.id = 'add_player';
-            add.style.backgroundColor = 'var(--clickable_dark)';
-            add.style.color = 'white';
-            add.style.fontWeight = 'bold';
-            add.style.fontSize = '1.5rem';
+            add.classList.add('white_dark');
+            add.classList.add('font_heavy');
             add.style.paddingLeft = '.5rem';
             add.style.paddingRight = '.5rem';
             add.style.borderRadius = '1.5rem';
@@ -128,16 +124,13 @@ document.addEventListener('DOMContentLoaded', function(){
 
             this.img = document.createElement("img");
             this.img.src = "people.png";
-            this.img.style.maxWidth = "100px";
-            this.img.style.maxHeight = "100px";
+            this.img.style.maxWidth = "3rem";
 
             const remove = document.createElement("p");
             remove.id = 'remove_player';
             remove.textContent = "-";
-            remove.style.backgroundColor = 'var(--clickable_dark)';
-            remove.style.color = 'white';
-            remove.style.fontWeight = 'bold';
-            remove.style.fontSize = '1.5rem';
+            remove.classList.add('white_dark');
+            remove.classList.add('font_heavy');
             remove.style.paddingLeft = '.7rem';
             remove.style.paddingRight = '.7rem';
             remove.style.borderRadius = '1.5rem';
@@ -246,8 +239,7 @@ document.addEventListener('DOMContentLoaded', function(){
             pDiv.style.textAlign = "center";
             pDiv.style.margin = "0";
             pDiv.style.width = "100%";
-            pDiv.style.backgroundColor = "#f2f2f2";
-            pDiv.style.borderRadius = "4px";
+            pDiv.classList.add('black_light');
             pDiv.appendChild(player.nameElement);
             pDiv.appendChild(player.scoreElement);
 
@@ -360,6 +352,7 @@ document.addEventListener('DOMContentLoaded', function(){
             // Select
             // miseres
             const selectMisere = document.createElement("select");
+            selectMisere.classList.add("white_dark");
             selectMisere.addEventListener("change", (event) => {
                 this.setPlayerMiseres(player.name, parseInt(event.target.value))
             });
@@ -385,6 +378,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
             //annonces
             const selectHandful = document.createElement("select");
+            selectHandful.classList.add("white_dark");
             selectHandful.addEventListener("change", (event) => {
                 this.setPlayerHandful(player.name, player.role, parseInt(event.target.value))
             });
@@ -452,19 +446,27 @@ document.addEventListener('DOMContentLoaded', function(){
 
         init() {
             this.div = document.createElement("div");
+            this.div.classList.add("black_light");
             this.div.style.display = "flex";
             this.div.style.flexDirection = "row";
             this.div.style.alignItems = "center";
+            //this.div.style.justifyContent = "center";
+            this.div.style.gap = "0.5rem";
+            this.div.style.paddingLeft = "0.5rem";
+            this.div.style.paddingRight = "0.5rem";
+
             main.appendChild(this.div)
 
             const p1 = document.createElement("p");
-            p1.textContent = "Chelem pour";
+            p1.textContent = "Chelem :";
+            p1.classList.add("font_medium");
             p1.style.margin = "0";
-            p1.style.marginRight = "0.5rem";
-            this.div.appendChild(p1)
+            p1.style.width = `calc(100%)`;
+            this.div.appendChild(p1);
 
             this.selectPlayer = document.createElement("select");
-            this.selectPlayer.style.marginRight = "0.5rem";
+            this.selectPlayer.classList.add("white_dark");
+            this.selectPlayer.classList.add("font_medium");
             this.selectPlayer.addEventListener("change", (event) => {
                 updateRecapMessages();
             })
@@ -472,6 +474,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
             this.selectValue = document.createElement("select");
+            this.selectValue.classList.add("white_dark");
+            this.selectValue.classList.add("font_medium");
+            this.selectValue.style.width = `calc(100%)`;
             this.selectValue.addEventListener("change", (event) => {
                 updateRecapMessages();
             })
@@ -481,13 +486,13 @@ document.addEventListener('DOMContentLoaded', function(){
             option0.textContent = "Aucun";
             option0.value = "0";
             const option1 = document.createElement("option");
-            option1.textContent = "Réussi non annoncé";
+            option1.textContent = "✅";
             option1.value = "200";
             const option2 = document.createElement("option");
-            option2.textContent = "Réussi et annoncé";
+            option2.textContent = "📢 & ✅";
             option2.value = "400";
             const option3 = document.createElement("option");
-            option3.textContent = "Non réussi";
+            option3.textContent = "❌";
             option3.value = "-200";
 
             this.selectValue.appendChild(option0);
@@ -498,6 +503,7 @@ document.addEventListener('DOMContentLoaded', function(){
             const option0_2 = document.createElement("option");
             option0_2.textContent = "Personne";
             option0_2.value = "0";
+            this.selectPlayer.style.width = `calc(100%)`;
             this.selectPlayer.appendChild(option0_2);
 
             this.buildChelemPlayerSelect();
@@ -590,18 +596,26 @@ document.addEventListener('DOMContentLoaded', function(){
             this.scoreboard = Scoreboard.getInstance();
 
             this.div = document.createElement("div");
+            this.div.classList.add("black_light");
+            this.div.classList.add("font_medium");
             this.div.style.display = "flex";
             this.div.style.flexDirection = "row";
             this.div.style.alignItems = "center";
+            //this.div.style.letterSpacing = "-0.05rem";
             main.appendChild(this.div)
 
             const p = document.createElement("p");
-            p.textContent = "Petit au bout pour";
+            p.textContent = "Petit au bout :";
             p.style.margin = "0";
+            p.style.marginLeft = "0.5rem";
             p.style.marginRight = "0.5rem";
+            p.style.width = "100%";
             this.div.appendChild(p)
 
             this.selectPlayer = document.createElement("select");
+            this.selectPlayer.classList.add("white_dark");
+            this.selectPlayer.classList.add("font_medium");
+            this.selectPlayer.style.width = "100%";
             this.selectPlayer.addEventListener("change", (event) => {
                 updateRecapMessages();
             })
@@ -611,6 +625,13 @@ document.addEventListener('DOMContentLoaded', function(){
             option0_2.textContent = "Personne";
             option0_2.value = "0";
             this.selectPlayer.appendChild(option0_2);
+
+            const empty = document.createElement("p");
+            empty.style.margin = "0";
+            empty.style.marginLeft = "0.5rem";
+            empty.style.marginRight = "0.5rem";
+            empty.style.width = "100%";
+            this.div.appendChild(empty)
 
             this.buildTheOneSelect();
         }
@@ -702,7 +723,6 @@ document.addEventListener('DOMContentLoaded', function(){
             this.label.style.display = "flex";
             this.label.style.alignItems = "center";
             this.label.style.textAlign = "center";
-            this.label.style.gap = "0.5rem";
 
             divTop.appendChild(this.label);
 
@@ -710,7 +730,8 @@ document.addEventListener('DOMContentLoaded', function(){
             if(Array.isArray(name)) {
                 this.label.style.display = "flex";
                 this.label.style.flexDirection = "row";
-                this.label.style.gap = "5rem";
+                this.label.style.gap = "2rem";
+                this.label.classList.add("font_heavy");
 
                 for(let i = 0; i < name.length; i++)
                 {
@@ -723,11 +744,10 @@ document.addEventListener('DOMContentLoaded', function(){
                     this.span.push(span);
                     span.id = name[i].toLowerCase()+i.toString();
 
+                    console.log(span.id);
+
                     const textNode = document.createTextNode((i == 0 ? "" : " ") +name[i]+" ");
                     labelDiv.appendChild(textNode);
-
-                    this.label.style.fontWeight = "bold";
-                    this.label.style.fontSize = "1.5rem";
                     labelDiv.appendChild(span);
 
                 }
@@ -737,8 +757,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 this.span.push(span);
                 span.id = name.toLowerCase();
                 this.label.appendChild(document.createTextNode(name+" "));
-                this.label.style.fontWeight = "bold";
-                this.label.style.fontSize = "1.5rem";
+                this.label.classList.add("font_heavy");
                 this.label.appendChild(span);
             }
 
@@ -750,8 +769,8 @@ document.addEventListener('DOMContentLoaded', function(){
             divButton.style.borderRadius = "10px";
 
             this.sub = document.createElement("button");
-            this.sub.style.fontSize = "1.5rem";
-            this.sub.style.fontWeight = "bold";
+            this.sub.classList.add("font_heavy");
+            this.sub.classList.add("white_dark");
             this.sub.style.margin = "0";
             this.sub.style.borderTopLeftRadius = "10px";
             this.sub.style.borderBottomLeftRadius = "10px";
@@ -765,8 +784,8 @@ document.addEventListener('DOMContentLoaded', function(){
             });
             divButton.appendChild(this.sub);
             this.add = document.createElement("button");
-            this.add.style.fontSize = "1.5rem";
-            this.add.style.fontWeight = "bold";
+            this.add.classList.add("font_heavy");
+            this.add.classList.add("white_dark");
             this.add.style.margin = "0";
             this.add.style.borderTopLeftRadius = "0px";
             this.add.style.borderBottomLeftRadius = "0px";
@@ -824,17 +843,14 @@ document.addEventListener('DOMContentLoaded', function(){
             document.querySelector("main").appendChild(this.divElement);
             this.divElement.style.display = "flex";
             this.divElement.style.flexDirection = "row";
-            this.divElement.style.backgroundColor = "#f2f2f2";
-            this.divElement.style.borderRadius = "4px";
-
-            // clair #f2f2f2
-            // foncé #5c5c5c
+            this.divElement.style.alignItems = "center";
+            this.divElement.classList.add("font_heavy");
+            this.divElement.classList.add("black_light");
 
             this.text = document.createElement("p");
             this.divElement.appendChild(this.text);
             this.text.textContent = name;
-            this.text.style.fontWeight = "bold";
-            this.text.style.fontSize = "1.5rem";
+            this.text.classList.add("font_heavy");
 
             this.select = document.createElement("select");
             this.select.id = name.toLowerCase();
@@ -842,14 +858,17 @@ document.addEventListener('DOMContentLoaded', function(){
                 updateRecapMessages();
             })
             this.divElement.appendChild(this.select);
-            this.select.style.width = "100%";
-            this.select.style.fontWeight = "bold";
-            this.select.style.fontSize = "1.5rem";
+            this.select.classList.add("font_heavy");
+            this.select.classList.add("white_dark");
+            this.select.style.width = `calc(100% - 9.5rem)`;
+            this.select.style.position = "fixed";
+            this.select.style.left = "8rem";
 
             for(let i = 0; i < valueNames.length; i++) {
                 const option = document.createElement("option");
                 option.textContent = valueNames[i];
                 option.value = i.toString();
+                option.classList.add("white_dark");
                 this.select.appendChild(option);
             }
         }
@@ -867,35 +886,95 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     function createTexts() {
+
+        const div = document.createElement("div");
+        div.classList.add("black_light");
+        div.classList.add("font_big");
+        div.style.display = "flex";
+        div.style.flexDirection = "column";
+        div.style.alignItems = "center";
+        div.style.justifyContent = "center";
+        div.style.padding = "0";
+        div.style.marginTop = "2rem";
+        main.appendChild(div);
+
         const win_text = document.createElement("p");
         win_text.id = "win_text";
+        win_text.style.marginBottom = "0";
         const score_text = document.createElement("p");
         score_text.id = "score_text";
-        score_text.textContent = "Déplace les jauges pour obtenir un score.";
+        score_text.style.marginBottom = "0";
+        //score_text.style.marginTop = "0";
         const summary_text = document.createElement("p");
         summary_text.id = "summary_text";
+        //summary_text.style.marginTop = "0";
 
-        main.appendChild(win_text);
-        main.appendChild(score_text);
-        main.appendChild(summary_text);
+        div.appendChild(win_text);
+        div.appendChild(score_text);
+        div.appendChild(summary_text);
     }
 
     function createButton(id, text) {
+        let div = document.getElementById('bottom_buttons');
+        if(div === null || div === undefined) {
+            div = document.createElement('div');
+            div.id = 'bottom_buttons';
+            div.classList.add("black_light");
+            div.style.display = "flex";
+            div.style.flexDirection = "row";
+            div.style.justifyContent = "center";
+            div.style.marginTop = "2rem";
+
+            main.appendChild(div);
+        }
+
         const button = document.createElement("button")
         button.id = id;
-        button.style.marginRight = "0.5rem";
         button.textContent = text;
-        main.appendChild(button);
+        button.classList.add("font_big");
+        button.classList.add("white_orange");
+        button.style.width = "50%";
+        button.style.minHeight = "3rem";
+        div.appendChild(button);
     }
     
     function createRulesText() {
-        let div = document.createElement("div");
-        div.id = "rules_text";
-        div.style.margin = "0";
-        main.appendChild(div);
 
-        let p1 = document.createElement("p");
-        div.appendChild(p1);
+        let nav = document.createElement("nav");
+        nav.id = "rules_text";
+        nav.style.margin = "0";
+        nav.style.padding = "0";
+        main.appendChild(nav);
+
+        const ul = document.createElement("ul");
+        ul.style.padding = "0";
+        ul.addEventListener("click", (event) => {
+            event.currentTarget.children[1].style.display = event.currentTarget.children[1].style.display === "none" ? "block" : "none";
+        });
+        nav.appendChild(ul);
+
+        const liVisible = document.createElement("li");
+        liVisible.classList.add("white_dark");
+        liVisible.classList.add("font_big");
+        liVisible.style.display = "flex";
+        liVisible.style.alignItems = "center";
+        ul.appendChild(liVisible);
+
+        const pRules = document.createElement("p");
+        pRules.textContent = "Règles";
+        pRules.style.marginLeft = "0.5rem";
+        liVisible.appendChild(pRules);
+        const img = document.createElement("img");
+        img.src = "glass.png";
+        img.style.maxWidth = "1.5rem";
+        liVisible.appendChild(img);
+
+        const li = document.createElement("li");
+        li.style.display = "none";
+        ul.appendChild(li);
+
+        const p1 = document.createElement("p");
+        li.appendChild(p1);
         p1.innerHTML += "Le prenant ne peut appeler qu'à 5 joueurs.";
         p1.innerHTML += '</br>';
         p1.innerHTML += "Valeurs des contrats selon la FFT: 25, 50, 100, 150.";
@@ -980,7 +1059,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const contractSelect = new InputSelect("Contrat", ["Petite","Garde","Garde Sans","Garde Contre"]);
     contractSelect.divElement.style.marginTop = "2rem";
     const oudlerSelect = new InputSelect("Bouts", ["0","1","2","3"]);
-    const scoreSlider = new Slider('score_slider', ["Attaque", "Défense"],0, 91, 1, 0);
+    const scoreSlider = new Slider('score_slider', ["⚔️Attaque", "🛡️Défense"],0, 91, 1, 0);
     scoreSlider.divElement.style.marginBottom = "2rem";
 
     chelem.init(scoreboard);
@@ -988,8 +1067,8 @@ document.addEventListener('DOMContentLoaded', function(){
 
     createTexts();
     
-    createButton("add_points", "Appliquer les points");
-    createButton("reset_points", "Repartir de 0");
+    createButton("add_points", "✅ Valider");
+    createButton("reset_points", "🔄 Nouvelle partie");
 
     createRulesText();
 
@@ -1231,10 +1310,19 @@ document.addEventListener('DOMContentLoaded', function(){
             winText.textContent = "Victoire de l'attaque.";
             scoreText.textContent = "Score de " + scoreSlider.getValue() + " pour " + oudlerSelect.getValue() + " bouts.";
             summaryText.textContent = "Points pour le preneur : " + attackerScore;
+            const atkSpan = document.getElementById("⚔️attaque0");
+            atkSpan.style.color = "green";
+            const defSpan = document.getElementById("🛡️défense1");
+            defSpan.style.color = "#9c2424";
+
         } else {
             winText.textContent = "Victoire de la défense.";
             scoreText.textContent =  "Score de " + scoreSlider.getValue() + " pour " + oudlerSelect.getValue() + " bouts.";
             summaryText.textContent = "Points pour le preneur : " + attackerScore;
+            const atkSpan = document.getElementById("⚔️attaque0");
+            atkSpan.style.color = "#9c2424";
+            const defSpan = document.getElementById("🛡️défense1");
+            defSpan.style.color = "green";
         }
     }
 
@@ -1249,9 +1337,6 @@ document.addEventListener('DOMContentLoaded', function(){
         })
 
         updateRecapMessages();
-
-        winText.textContent = "";
-        scoreText.textContent = "Déplace les jauges pour obtenir un score.";
     }
 
     //Add points
