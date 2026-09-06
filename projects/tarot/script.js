@@ -1003,16 +1003,23 @@ document.addEventListener('DOMContentLoaded', function(){
         p1.innerHTML += "Toutes la valeurs décrites sont arrondies en fonction du nombre de joueurs et de la situation.";
         p1.innerHTML += '</br>';
         p1.innerHTML += "Les règles présentées sont vouées à être modifiées.";
+
+        const factorsInputs = createCustomRulesInputs(li);
+        document.getElementById('contract_factors').addEventListener('click', function() {
+            for(let i = 0; i < factorsInputs.length; i++) {
+                contractFactor[i] = factorsInputs[i].getValue();
+            }
+        })
     }
 
-    function createCustomRulesInputs() {
+    function createCustomRulesInputs(parentNode) {
 
         const div = document.createElement("div");
-        document.querySelector("main").appendChild(div);
+        div.style.margin = "0";
+        parentNode.appendChild(div);
 
         const p = document.createElement("p");
         div.appendChild(p);
-        p.style.margin = "0";
         p.textContent = "Facteur des contrats (la valeur de la mise est 25)";
 
         const divInputs = document.createElement("div");
@@ -1029,7 +1036,7 @@ document.addEventListener('DOMContentLoaded', function(){
             nDiv.style.display = "flex";
             nDiv.style.flexDirection = "column";
             nDiv.style.textAlign = "center";
-            nDiv.style.width = "100px";
+            nDiv.style.width = "100%";
 
             const p = document.createElement("p");
             p.style.margin = "0";
@@ -1071,13 +1078,6 @@ document.addEventListener('DOMContentLoaded', function(){
     createTexts();
 
     createRulesText();
-
-    const factorsInputs = createCustomRulesInputs();
-    document.getElementById('contract_factors').addEventListener('click', function() {
-        for(let i = 0; i < factorsInputs.length; i++) {
-            contractFactor[i] = factorsInputs[i].getValue();
-        }
-    })
 
     const winText = document.getElementById("win_text");
     const scoreText = document.getElementById('score_text');
