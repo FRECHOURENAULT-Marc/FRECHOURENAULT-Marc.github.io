@@ -981,10 +981,10 @@ document.addEventListener('DOMContentLoaded', function(){
         p1.innerHTML += '</br>';
         p1.innerHTML += 'Une "annonce" est définie comme un pseudo contrat supplémentaire qui doit être annoncé au cours de la première volée.';
         p1.innerHTML += '</br>';
-        p1.innerHTML += "Une annonce n'affecte pas les coéquipiers de l'annonceur, uniquement les adervsaires et l'annonceur.";
+        p1.innerHTML += "Une annonce n'affecte pas les coéquipiers de l'annonceur, uniquement les adversaires et l'annonceur.";
         p1.innerHTML += '</br>';
-        p1.innerHTML += "La valeur d'une poignée est comptée comme 'valeur de la poignée' x 'nombre d'aversaires'.";
-        p1.innerHTML += "Pour les poignées, il couviendra de montrer le nombre d'atouts corresdpondant à la poignée avavnt que l'annonceur ne joue sa première carte. ";
+        p1.innerHTML += "La valeur d'une poignée est comptée comme 'valeur de la poignée' x 'nombre d'adversaires'. ";
+        p1.innerHTML += "Pour les poignées, il conviendra de montrer le nombre d'atouts correspondant à la poignée avant que l'annonceur ne joue sa première carte. ";
         p1.innerHTML += "L'excuse ne peut être montrée pour la poignée que si l'annonceur n'a pas d'autre atout à montrer. ";
         p1.innerHTML += "Le nombre d'atouts nécessaires pour annoncer des poignées change en fonction du nombre de joueurs et des règles appliquées, à vous de choisir.";
         p1.innerHTML += '</br>';
@@ -1000,7 +1000,7 @@ document.addEventListener('DOMContentLoaded', function(){
         p1.innerHTML += '</br>';
         p1.innerHTML += "Un Chelem n'affecte pas les coéquipiers de l'annonceur.";
         p1.innerHTML += '</br>';
-        p1.innerHTML += "Toutes la valeurs décrites sont arrondies en fonction du nombre de joueurs et de la situation.";
+        p1.innerHTML += "Toutes les valeurs décrites sont arrondies en fonction du nombre de joueurs et de la situation.";
         p1.innerHTML += '</br>';
         p1.innerHTML += "Les règles présentées sont vouées à être modifiées.";
 
