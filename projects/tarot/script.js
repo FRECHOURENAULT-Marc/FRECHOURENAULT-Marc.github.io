@@ -948,9 +948,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
         const ul = document.createElement("ul");
         ul.style.padding = "0";
-        ul.addEventListener("click", (event) => {
-            event.currentTarget.children[1].style.display = event.currentTarget.children[1].style.display === "none" ? "block" : "none";
-        });
+       
+       
+       
         nav.appendChild(ul);
 
         const liVisible = document.createElement("li");
@@ -958,6 +958,9 @@ document.addEventListener('DOMContentLoaded', function(){
         liVisible.classList.add("font_big");
         liVisible.style.display = "flex";
         liVisible.style.alignItems = "center";
+        liVisible.addEventListener("click", (event) => {
+          event.currentTarget.parentNode.children[1].style.display = event.currentTarget.parentNode.children[1].style.display === "none" ? "block" : "none";
+        });
         ul.appendChild(liVisible);
 
         const pRules = document.createElement("p");
