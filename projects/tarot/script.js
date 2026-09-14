@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function(){
 
     const main = document.querySelector("main");
@@ -698,6 +697,7 @@ document.addEventListener('DOMContentLoaded', function(){
             this.input.max = max.toString();
             this.input.step = step.toString();
             this.input.value = initialValue.toString();
+            this.input.id = elementID;
         }
 
         getValue() {
@@ -915,20 +915,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     function createButton(id, text) {
-        //move from here
         let div = document.getElementById('bottom_buttons');
-        if(div === null || div === undefined) {
-            div = document.createElement('div');
-            div.id = 'bottom_buttons';
-            div.classList.add("black_light");
-            div.style.display = "flex";
-            div.style.flexDirection = "row";
-            div.style.justifyContent = "center";
-            div.style.marginTop = "2rem";
-
-            main.appendChild(div);
-        }
-
         const button = document.createElement("button")
         button.id = id;
         button.textContent = text;
@@ -937,48 +924,43 @@ document.addEventListener('DOMContentLoaded', function(){
         button.style.width = "50%";
         button.style.minHeight = "3rem";
         div.appendChild(button);
+
+        return button;
     }
     
     function createRulesText() {
 
-        let nav = document.createElement("nav");
-        nav.id = "rules_text";
-        nav.style.margin = "0";
-        nav.style.padding = "0";
-        main.appendChild(nav);
+        const div = document.createElement("div");
 
-        const ul = document.createElement("ul");
-        ul.style.padding = "0";
-       
-       
-       
-        nav.appendChild(ul);
+        div.id = "rules_text";
+        div.style.margin = "0";
+        div.style.padding = "0";
+        main.appendChild(div);
 
-        const liVisible = document.createElement("li");
-        liVisible.classList.add("white_dark");
-        liVisible.classList.add("font_big");
-        liVisible.style.display = "flex";
-        liVisible.style.alignItems = "center";
-        liVisible.addEventListener("click", (event) => {
-          event.currentTarget.parentNode.children[1].style.display = event.currentTarget.parentNode.children[1].style.display === "none" ? "block" : "none";
+        const divRulesTitle = document.createElement("div");
+        divRulesTitle.classList.add("white_dark");
+        divRulesTitle.classList.add("font_big");
+        divRulesTitle.style.display = "flex";
+        divRulesTitle.style.alignItems = "center";
+        divRulesTitle.addEventListener("click", (event) => {
+            //Rules text
+            event.currentTarget.parentNode.children[1].style.display = event.currentTarget.parentNode.children[1].style.display === "none" ? "block" : "none";
+            //Rules inputs
+            event.currentTarget.parentNode.children[2].style.display = event.currentTarget.parentNode.children[2].style.display === "none" ? "block" : "none";
         });
-        ul.appendChild(liVisible);
+        div.appendChild(divRulesTitle);
 
         const pRules = document.createElement("p");
         pRules.textContent = "Règles";
         pRules.style.marginLeft = "0.5rem";
-        liVisible.appendChild(pRules);
+        divRulesTitle.appendChild(pRules);
         const img = document.createElement("img");
         img.src = "glass.png";
         img.style.maxWidth = "1.5rem";
-        liVisible.appendChild(img);
-
-        const li = document.createElement("li");
-        li.style.display = "none";
-        ul.appendChild(li);
+        divRulesTitle.appendChild(img);
 
         const p1 = document.createElement("p");
-        li.appendChild(p1);
+        div.appendChild(p1);
         p1.innerHTML += "Le prenant ne peut appeler qu'à 5 joueurs.";
         p1.innerHTML += '</br>';
         p1.innerHTML += "Valeurs des contrats selon la FFT: 25, 50, 100, 150.";
@@ -1008,12 +990,10 @@ document.addEventListener('DOMContentLoaded', function(){
         p1.innerHTML += '</br>';
         p1.innerHTML += "Les règles présentées sont vouées à être modifiées.";
 
-        const factorsInputs = createCustomRulesInputs(li);
-        document.getElementById('contract_factors').addEventListener('click', function() {
-            for(let i = 0; i < factorsInputs.length; i++) {
-                contractFactor[i] = factorsInputs[i].getValue();
-            }
-        })
+        const factorsInputs = createCustomRulesInputs(div);
+        document.getElementById('contract_factors').addEventListener('click', updateRecapMessages);
+
+        document.getElementById('mise_value').addEventListener('change', updateRecapMessages);
     }
 
     function createCustomRulesInputs(parentNode) {
@@ -1022,9 +1002,22 @@ document.addEventListener('DOMContentLoaded', function(){
         div.style.margin = "0";
         parentNode.appendChild(div);
 
+        // Mise
+        const divMise  = document.createElement("div");
+        divMise.style.display = "flex";
+        divMise.style.flexDirection = "row";
+        divMise.style.gap = "0.5rem";
+        div.appendChild(divMise);
+        const pMise = document.createElement("p");
+        divMise.appendChild(pMise);
+        pMise.textContent = "La mise vaut";
+        pMise.style.margin = "0";
+        const miseValue = new NumberInput('mise_value', 1, 999, 1, 50, divMise);
+
+        //Facteurs
         const p = document.createElement("p");
         div.appendChild(p);
-        p.textContent = "Facteur des contrats (la valeur de la mise est 25)";
+        p.textContent = "Facteur des contrats :";
 
         const divInputs = document.createElement("div");
         div.appendChild(divInputs);
@@ -1049,13 +1042,13 @@ document.addEventListener('DOMContentLoaded', function(){
         }
 
         divInputLabel[0].children[0].textContent = "Petite/Pousse"
-        const takeFacInput = new NumberInput('take_fac', 1, 10, 1, 1, divInputLabel[0]);
+        const takeFacInput = new NumberInput('take_fac', 1, 99, 1, 1, divInputLabel[0]);
         divInputLabel[1].children[0].textContent = "Garde"
-        const GuardFacInput = new NumberInput('guard_fac', 1, 10, 1, 2, divInputLabel[1]);
+        const GuardFacInput = new NumberInput('guard_fac', 1, 99, 1, 2, divInputLabel[1]);
         divInputLabel[2].children[0].textContent = "Garde sans"
-        const GuardWFacInput = new NumberInput('guard_without_fac', 1, 10, 1, 4, divInputLabel[2]);
+        const GuardWFacInput = new NumberInput('guard_without_fac', 1, 99, 1, 4, divInputLabel[2]);
         divInputLabel[3].children[0].textContent = "Garde contre"
-        const GuardAFacInput = new NumberInput('guard_against_fac', 1, 10, 1, 6, divInputLabel[3]);
+        const GuardAFacInput = new NumberInput('guard_against_fac', 1, 99, 1, 6, divInputLabel[3]);
 
         return [takeFacInput, GuardFacInput, GuardWFacInput, GuardAFacInput];
     }
@@ -1065,6 +1058,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const scoreboard = new Scoreboard();
     const announcements = new AnnouncementManager();
 
+    let miseValue = 25;
     const contractFactor = [1, 2, 4, 6];
 
     const contractSelect = new InputSelect("Contrat", ["Petite","Garde","Garde Sans","Garde Contre"]);
@@ -1075,13 +1069,19 @@ document.addEventListener('DOMContentLoaded', function(){
 
     chelem.init(scoreboard);
     theOne.init(scoreboard);
+
+    //
+    const bottomDiv = document.createElement('div');
+    bottomDiv.id = 'bottom_buttons';
+    bottomDiv.classList.add("black_light");
+    bottomDiv.style.display = "flex";
+    bottomDiv.style.flexDirection = "row";
+    bottomDiv.style.justifyContent = "center";
+    bottomDiv.style.marginTop = "2rem";
+    main.appendChild(bottomDiv);
     
-    createButton("add_points", "✅ Valider");
-    const addPointsButton = document.getElementById("add_points");
-    addPointsButton.style.flex = "1";
-    createButton("reset_points", "🔄 Nouvelle partie");
-    const resetButton = document.getElementById("reset_points");
-    resetButton.style.flex = "0.5";
+    createButton("add_points", "✅ Valider").style.flex = "1";
+    createButton("reset_points", "🔄 Nouvelle").style.flex = "0.5";
 
     createTexts();
 
@@ -1132,6 +1132,19 @@ document.addEventListener('DOMContentLoaded', function(){
         return false;
     }
 
+    function updateFactors() {
+        const divFactors = document.getElementById("contract_factors");
+        for(let i = 0; i < divFactors.children.length; i++) {
+            const divFac = divFactors.children[i];
+            contractFactor[i] = divFac.children[1].value;
+        }
+
+    }
+    function updateMiseValue() {
+        const miseInput = document.getElementById("mise_value");
+        if(miseInput)
+            miseValue = miseInput.value;
+    }
     function getRoundScore() {
         return scoreSlider.getValue();
     }
@@ -1156,10 +1169,12 @@ document.addEventListener('DOMContentLoaded', function(){
     function getContractValue() {
         let contractIndex = contractSelect.getValue();
         const diff = getDiffTargetScore();
+        updateFactors();
+        updateMiseValue();
         if(diff > 0)
-            return (diff + 25) * contractFactor[contractIndex];
+            return (diff + miseValue) * contractFactor[contractIndex];
         else
-            return (diff - 25) * contractFactor[contractIndex];
+            return (diff - miseValue) * contractFactor[contractIndex];
     }
 
     function addContractToPlayer(team, scores, contractValue) {
@@ -1284,6 +1299,7 @@ document.addEventListener('DOMContentLoaded', function(){
         chelem.applyChelemPoints(teams, scores);
 
         // petit
+        updateFactors();
         theOne.applyTheOne(teams, scores, contractFactor[contractSelect.getValue()]);
 
         return [teams, scores];
@@ -1377,6 +1393,11 @@ document.addEventListener('DOMContentLoaded', function(){
     });
 
     document.getElementById('reset_points').addEventListener('click', function() {
+        const res = confirm("Êtes-vous sûr de vouloir recommencer ?");
+
+        if (res.valueOf() === false)
+            return;
+
         for(let p of scoreboard.players)
             p.resetScore();
         resetSliders();
