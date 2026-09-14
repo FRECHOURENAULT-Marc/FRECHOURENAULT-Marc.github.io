@@ -915,6 +915,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     function createButton(id, text) {
+        //move from here
         let div = document.getElementById('bottom_buttons');
         if(div === null || div === undefined) {
             div = document.createElement('div');
@@ -1076,7 +1077,11 @@ document.addEventListener('DOMContentLoaded', function(){
     theOne.init(scoreboard);
     
     createButton("add_points", "✅ Valider");
+    const addPointsButton = document.getElementById("add_points");
+    addPointsButton.style.flex = "1";
     createButton("reset_points", "🔄 Nouvelle partie");
+    const resetButton = document.getElementById("reset_points");
+    resetButton.style.flex = "0.5";
 
     createTexts();
 
@@ -1086,13 +1091,13 @@ document.addEventListener('DOMContentLoaded', function(){
     const scoreText = document.getElementById('score_text');
     const summaryText = document.getElementById('summary_text');
 
-    for(let i = 0; i < 5; i++) {
-        let nPlayer = new Player("Joueur"+(i+1));
-        scoreboard.addPlayer(nPlayer);
-        announcements.addPlayer(nPlayer);
-        chelem.buildChelemPlayerSelect();
-        theOne.buildTheOneSelect();
-    }
+    // for(let i = 0; i < 5; i++) {
+        // let nPlayer = new Player("Joueur"+(i+1));
+        // scoreboard.addPlayer(nPlayer);
+        // announcements.addPlayer(nPlayer);
+        // chelem.buildChelemPlayerSelect();
+        // theOne.buildTheOneSelect();
+    // }
 
     contractSelect.setValue(0)
     oudlerSelect.setValue(0);
