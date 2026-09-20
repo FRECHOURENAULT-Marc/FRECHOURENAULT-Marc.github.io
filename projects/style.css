@@ -74,7 +74,7 @@ body {
     --gapPerLine : calc(var(--lineItem) - 1);
     --widthLine : calc(100% - (var(--gapPerLine) * var(--gap)));
     --width : calc(var(--widthLine) / var(--lineItem));
-    width: 10rem;
+    width: var(--width);
     height: 6rem;
 
     /*Container*/
