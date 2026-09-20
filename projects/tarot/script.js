@@ -966,6 +966,7 @@ document.addEventListener('DOMContentLoaded', function(){
         divRulesTitle.appendChild(img);
 
         const p1 = document.createElement("p");
+        p1.classList.add("font_small");
         div.appendChild(p1);
         p1.innerHTML += "Le prenant ne peut appeler qu'à 5 joueurs.";
         p1.innerHTML += '</br>';
