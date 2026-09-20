@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function(){
             const selectMisere = document.createElement("select");
             selectMisere.classList.add("white_dark");
             selectMisere.addEventListener("change", (event) => {
-                this.setPlayerMiseres(player.name, parseInt(event.target.value))
+                this.setPlayerMiseres(player.name, Number(event.target.value))
             });
             divAnn.appendChild(selectMisere);
 
@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function(){
             const selectHandful = document.createElement("select");
             selectHandful.classList.add("white_dark");
             selectHandful.addEventListener("change", (event) => {
-                this.setPlayerHandful(player.name, player.role, parseInt(event.target.value))
+                this.setPlayerHandful(player.name, player.role, Number(event.target.value))
             });
             divAnn.appendChild(selectHandful);
 
@@ -419,10 +419,16 @@ document.addEventListener('DOMContentLoaded', function(){
             data.value = value;
         }
         getHandfulValue(playerName) {
-            return this.playerHandful.find(player => player.name === playerName).value;
+            const p = this.playerHandful.find(player => player.name === playerName);
+            if(p == undefined || p == null)
+                return 0;
+            return Number(p.value);
         }
         getMiseresValue(playerName) {
-            return this.playerMiseres.find(player => player.name === playerName).value;
+            const p = this.playerMiseres.find(player => player.name === playerName);
+            if(p == undefined || p == null)
+                return 0;
+            return Number(p.value);
         }
         
         resetValues() {
@@ -536,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function(){
             const scoreboard = Scoreboard.getInstance();
             const pIndex = scoreboard.getPlayerIndexByName(this.getValuePlayerName())
             const player = scoreboard.players[pIndex];
-            const value = parseInt(this.getValue());
+            const value = Number(this.getValue());
 
             if (value === 0)
                 return;
@@ -701,7 +707,7 @@ document.addEventListener('DOMContentLoaded', function(){
         }
 
         getValue() {
-            return parseInt(this.input.value);
+            return Number(this.input.value);
         }
         setValue(newValue) {
             this.input.value = newValue.toString();
@@ -817,7 +823,7 @@ document.addEventListener('DOMContentLoaded', function(){
             main.appendChild(this.divElement);
         }
         getValue() {
-            return parseInt(this.input.value);
+            return Number(this.input.value);
         }
         setValue(value) {
             this.input.value = value;
@@ -874,7 +880,7 @@ document.addEventListener('DOMContentLoaded', function(){
         }
 
         getValue() {
-            return parseInt(this.select.value);
+            return Number(this.select.value);
         }
         setValue(value) {
             this.select.value = value;
@@ -1092,11 +1098,11 @@ document.addEventListener('DOMContentLoaded', function(){
     const summaryText = document.getElementById('summary_text');
 
     // for(let i = 0; i < 5; i++) {
-        // let nPlayer = new Player("Joueur"+(i+1));
-        // scoreboard.addPlayer(nPlayer);
-        // announcements.addPlayer(nPlayer);
-        // chelem.buildChelemPlayerSelect();
-        // theOne.buildTheOneSelect();
+    //     let nPlayer = new Player("Joueur"+(i+1));
+    //     scoreboard.addPlayer(nPlayer);
+    //     announcements.addPlayer(nPlayer);
+    //     chelem.buildChelemPlayerSelect();
+    //     theOne.buildTheOneSelect();
     // }
 
     contractSelect.setValue(0)
@@ -1136,14 +1142,14 @@ document.addEventListener('DOMContentLoaded', function(){
         const divFactors = document.getElementById("contract_factors");
         for(let i = 0; i < divFactors.children.length; i++) {
             const divFac = divFactors.children[i];
-            contractFactor[i] = divFac.children[1].value;
+            contractFactor[i] = Number(divFac.children[1].value);
         }
 
     }
     function updateMiseValue() {
         const miseInput = document.getElementById("mise_value");
         if(miseInput)
-            miseValue = miseInput.value;
+            miseValue = Number(miseInput.value);
     }
     function getRoundScore() {
         return scoreSlider.getValue();
