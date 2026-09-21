@@ -5,9 +5,33 @@
     --light-darker: #c7c7c7;
     --light: #f2f2f2;
 
+    --light-red: #ffb0b0;
     --orange: #eb5e28;
 }
 
+/* Fonts */
+.font_heavy {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+.font_large {
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+.font_big {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+.font_medium {
+    font-weight: bold;
+    font-size: 1rem;
+}
+.font_small {
+    font-size: 13px;
+}
+
+
+/* Html */
 body {
     padding: 0;
     font-family: arial, sans-serif;
