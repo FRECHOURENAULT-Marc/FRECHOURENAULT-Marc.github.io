@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function(){
 
     const main = document.querySelector("main");
@@ -19,17 +18,17 @@ document.addEventListener('DOMContentLoaded', function(){
     class Player {
         constructor(name) {
             this.nameElement = document.createElement('p');
-            this.nameElement.style.margin = '0';
             this.nameElement.textContent = name;
-            this.nameElement.style.border = '1px solid black';
+            this.nameElement.classList.add("white_orange");
+            this.nameElement.style.margin = '0.25rem';
             this.nameElement.style.padding = '0.5rem';
-            this.nameElement.style.maxWidth = '4rem';
+            this.nameElement.style.fontWeight = 'bold';
 
             this.scoreElement = document.createElement('div');
 
             this.ps = document.createElement('p');
+            this.ps.classList.add("font_heavy");
             this.ps.style.margin = '0';
-            this.ps.style.fontWeight = 'bold';
             this.ps.textContent = '0';
 
             this.scoreElement.appendChild(this.ps);
@@ -43,11 +42,10 @@ document.addEventListener('DOMContentLoaded', function(){
         resetScore() {
             
             this.totalScore = 0;
-            this.ps.textContent = this.totalScore;
-            for(let i = 1; i < this.scoreElement.children.length; i++)
+            this.ps.textContent = 0;
+            while(this.scoreElement.children.length > 1)
             {
-                let score = this.scoreElement.children[i];
-                this.scoreElement.removeChild(score);
+                this.scoreElement.removeChild(this.scoreElement.firstChild);
             }
         }
 
@@ -60,39 +58,35 @@ document.addEventListener('DOMContentLoaded', function(){
             ps.style.margin = '0';
             ps.textContent = points;
 
-            this.scoreElement.appendChild(ps);
+            this.scoreElement.insertBefore(ps, this.ps)
+            //this.scoreElement.appendChild(ps);
         }
 
         setRole(role) {
-            this.nameElement.style.color = 'black';
-            this.nameElement.style.fontWeight = 'normal';
+            this.nameElement.parentNode.style.backgroundColor = 'var(--clickable_light)';
 
             switch (role) {
                 case PLAYER_ROLE.DEFENDER:
                 {
-                    this.nameElement.style.color = 'black';
-                    this.nameElement.style.fontWeight = 'normal';
+                    this.nameElement.parentNode.style.backgroundColor = 'var(--clickable_light)';
                     this.role = PLAYER_ROLE.DEFENDER;
                     break;
                 }
                 case PLAYER_ROLE.CALLED:
                 {
-                    this.nameElement.style.color = 'blue';
-                    this.nameElement.style.fontWeight = 'bold';
+                    this.nameElement.parentNode.style.backgroundColor = '#a1c5ff';
                     this.role = PLAYER_ROLE.CALLED;
                     break;
                 }
                 case PLAYER_ROLE.ATTACKER:
                 {
-                    this.nameElement.style.color = 'red';
-                    this.nameElement.style.fontWeight = 'bold';
+                    this.nameElement.parentNode.style.backgroundColor = '#ffb0b0';
                     this.role = PLAYER_ROLE.ATTACKER;
                     break;
                 }
                 default:
                 {
-                    this.nameElement.style.color = 'black';
-                    this.nameElement.style.fontWeight = 'normal';
+                    this.nameElement.parentNode.style.backgroundColor = 'var(--clickable_light)';
                     this.role = PLAYER_ROLE.DEFENDER;
                     break;
                 }
@@ -109,15 +103,36 @@ document.addEventListener('DOMContentLoaded', function(){
 
             this.element = document.createElement("div");
             this.element.id = 'scoreboard';
-
             main.appendChild(this.element);
+
+            this.managePlayerDiv = document.createElement("div");
+            this.managePlayerDiv.style.display = 'flex';
+            this.managePlayerDiv.style.flexDirection = 'row';
+            this.managePlayerDiv.style.alignItems = 'center';
+            this.managePlayerDiv.style.justifyContent = 'center';
+            this.element.appendChild(this.managePlayerDiv);
 
             const add = document.createElement("p");
             add.id = 'add_player';
-            add.textContent = "Ajouter un joueur";
+            add.classList.add('white_dark');
+            add.classList.add('font_heavy');
+            add.style.paddingLeft = '.5rem';
+            add.style.paddingRight = '.5rem';
+            add.style.borderRadius = '1.5rem';
+            add.textContent = "+";
+
+            this.img = document.createElement("img");
+            this.img.src = "people.png";
+            this.img.style.maxWidth = "3rem";
+
             const remove = document.createElement("p");
             remove.id = 'remove_player';
-            remove.textContent = "Supprimer un joueur";
+            remove.textContent = "-";
+            remove.classList.add('white_dark');
+            remove.classList.add('font_heavy');
+            remove.style.paddingLeft = '.7rem';
+            remove.style.paddingRight = '.7rem';
+            remove.style.borderRadius = '1.5rem';
 
             this.players = [];
 
@@ -149,13 +164,16 @@ document.addEventListener('DOMContentLoaded', function(){
                 }
             });
 
-            this.element.appendChild(add);
-            this.element.appendChild(remove);
+            this.managePlayerDiv.appendChild(add);
+            this.managePlayerDiv.appendChild(this.img);
+            this.managePlayerDiv.appendChild(remove);
 
             this.playerTexts = document.createElement("div");
             this.playerTexts.style.display = 'flex';
             this.playerTexts.style.flexDirection = 'row';
+            this.playerTexts.style.justifyContent = 'center';
             this.playerTexts.style.margin = '0';
+            this.playerTexts.style.minWidth = '100%';
 
             this.element.appendChild(this.playerTexts);
         }
@@ -219,6 +237,8 @@ document.addEventListener('DOMContentLoaded', function(){
             const pDiv = document.createElement("div");
             pDiv.style.textAlign = "center";
             pDiv.style.margin = "0";
+            pDiv.style.width = "100%";
+            pDiv.classList.add('black_light');
             pDiv.appendChild(player.nameElement);
             pDiv.appendChild(player.scoreElement);
 
@@ -331,8 +351,9 @@ document.addEventListener('DOMContentLoaded', function(){
             // Select
             // miseres
             const selectMisere = document.createElement("select");
+            selectMisere.classList.add("white_dark");
             selectMisere.addEventListener("change", (event) => {
-                this.setPlayerMiseres(player.name, parseInt(event.target.value))
+                this.setPlayerMiseres(player.name, Number(event.target.value))
             });
             divAnn.appendChild(selectMisere);
 
@@ -340,13 +361,13 @@ document.addEventListener('DOMContentLoaded', function(){
             option0_1.textContent = "❌";
             option0_1.value = "0";
             const optionM1 = document.createElement("option");
-            optionM1.textContent = "🃏";
+            optionM1.textContent = "✨";
             optionM1.value = "10";
             const optionM2 = document.createElement("option");
             optionM2.textContent = "👑";
             optionM2.value = "10";
             const optionM3 = document.createElement("option");
-            optionM3.textContent = "🃏👑";
+            optionM3.textContent = "✨👑";
             optionM3.value = "20";
 
             selectMisere.appendChild(option0_1);
@@ -356,8 +377,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
             //annonces
             const selectHandful = document.createElement("select");
+            selectHandful.classList.add("white_dark");
             selectHandful.addEventListener("change", (event) => {
-                this.setPlayerHandful(player.name, player.role, parseInt(event.target.value))
+                this.setPlayerHandful(player.name, player.role, Number(event.target.value))
             });
             divAnn.appendChild(selectHandful);
 
@@ -397,10 +419,16 @@ document.addEventListener('DOMContentLoaded', function(){
             data.value = value;
         }
         getHandfulValue(playerName) {
-            return this.playerHandful.find(player => player.name === playerName).value;
+            const p = this.playerHandful.find(player => player.name === playerName);
+            if(p == undefined || p == null)
+                return 0;
+            return Number(p.value);
         }
         getMiseresValue(playerName) {
-            return this.playerMiseres.find(player => player.name === playerName).value;
+            const p = this.playerMiseres.find(player => player.name === playerName);
+            if(p == undefined || p == null)
+                return 0;
+            return Number(p.value);
         }
         
         resetValues() {
@@ -423,19 +451,27 @@ document.addEventListener('DOMContentLoaded', function(){
 
         init() {
             this.div = document.createElement("div");
+            this.div.classList.add("black_light");
             this.div.style.display = "flex";
             this.div.style.flexDirection = "row";
             this.div.style.alignItems = "center";
+            //this.div.style.justifyContent = "center";
+            this.div.style.gap = "0.5rem";
+            this.div.style.paddingLeft = "0.5rem";
+            this.div.style.paddingRight = "0.5rem";
+
             main.appendChild(this.div)
 
             const p1 = document.createElement("p");
-            p1.textContent = "Chelem pour";
+            p1.textContent = "Chelem :";
+            p1.classList.add("font_medium");
             p1.style.margin = "0";
-            p1.style.marginRight = "0.5rem";
-            this.div.appendChild(p1)
+            p1.style.width = `calc(100%)`;
+            this.div.appendChild(p1);
 
             this.selectPlayer = document.createElement("select");
-            this.selectPlayer.style.marginRight = "0.5rem";
+            this.selectPlayer.classList.add("white_dark");
+            this.selectPlayer.classList.add("font_medium");
             this.selectPlayer.addEventListener("change", (event) => {
                 updateRecapMessages();
             })
@@ -443,6 +479,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
             this.selectValue = document.createElement("select");
+            this.selectValue.classList.add("white_dark");
+            this.selectValue.classList.add("font_medium");
+            this.selectValue.style.width = `calc(100%)`;
             this.selectValue.addEventListener("change", (event) => {
                 updateRecapMessages();
             })
@@ -452,13 +491,13 @@ document.addEventListener('DOMContentLoaded', function(){
             option0.textContent = "Aucun";
             option0.value = "0";
             const option1 = document.createElement("option");
-            option1.textContent = "Réussi non annoncé";
+            option1.textContent = "✅";
             option1.value = "200";
             const option2 = document.createElement("option");
-            option2.textContent = "Réussi et annoncé";
+            option2.textContent = "📢 & ✅";
             option2.value = "400";
             const option3 = document.createElement("option");
-            option3.textContent = "Non réussi";
+            option3.textContent = "❌";
             option3.value = "-200";
 
             this.selectValue.appendChild(option0);
@@ -469,6 +508,7 @@ document.addEventListener('DOMContentLoaded', function(){
             const option0_2 = document.createElement("option");
             option0_2.textContent = "Personne";
             option0_2.value = "0";
+            this.selectPlayer.style.width = `calc(100%)`;
             this.selectPlayer.appendChild(option0_2);
 
             this.buildChelemPlayerSelect();
@@ -502,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function(){
             const scoreboard = Scoreboard.getInstance();
             const pIndex = scoreboard.getPlayerIndexByName(this.getValuePlayerName())
             const player = scoreboard.players[pIndex];
-            const value = parseInt(this.getValue());
+            const value = Number(this.getValue());
 
             if (value === 0)
                 return;
@@ -561,18 +601,26 @@ document.addEventListener('DOMContentLoaded', function(){
             this.scoreboard = Scoreboard.getInstance();
 
             this.div = document.createElement("div");
+            this.div.classList.add("black_light");
+            this.div.classList.add("font_medium");
             this.div.style.display = "flex";
             this.div.style.flexDirection = "row";
             this.div.style.alignItems = "center";
+            //this.div.style.letterSpacing = "-0.05rem";
             main.appendChild(this.div)
 
             const p = document.createElement("p");
-            p.textContent = "Petit au bout pour";
+            p.textContent = "Petit au bout :";
             p.style.margin = "0";
+            p.style.marginLeft = "0.5rem";
             p.style.marginRight = "0.5rem";
+            p.style.width = "100%";
             this.div.appendChild(p)
 
             this.selectPlayer = document.createElement("select");
+            this.selectPlayer.classList.add("white_dark");
+            this.selectPlayer.classList.add("font_medium");
+            this.selectPlayer.style.width = "100%";
             this.selectPlayer.addEventListener("change", (event) => {
                 updateRecapMessages();
             })
@@ -582,6 +630,13 @@ document.addEventListener('DOMContentLoaded', function(){
             option0_2.textContent = "Personne";
             option0_2.value = "0";
             this.selectPlayer.appendChild(option0_2);
+
+            const empty = document.createElement("p");
+            empty.style.margin = "0";
+            empty.style.marginLeft = "0.5rem";
+            empty.style.marginRight = "0.5rem";
+            empty.style.width = "100%";
+            this.div.appendChild(empty)
 
             this.buildTheOneSelect();
         }
@@ -648,10 +703,11 @@ document.addEventListener('DOMContentLoaded', function(){
             this.input.max = max.toString();
             this.input.step = step.toString();
             this.input.value = initialValue.toString();
+            this.input.id = elementID;
         }
 
         getValue() {
-            return parseInt(this.input.value);
+            return Number(this.input.value);
         }
         setValue(newValue) {
             this.input.value = newValue.toString();
@@ -660,75 +716,114 @@ document.addEventListener('DOMContentLoaded', function(){
     class Slider {
         constructor(elementId, name, min, max, step = 1, initialValue = 0) {
             this.divElement = document.createElement("div");
+            this.divElement.style.backgroundColor = "var(--clickable_light)";
 
             const divTop = document.createElement("div");
             divTop.style.display = "flex";
             divTop.style.flexDirection = "row";
-            const divButton = document.createElement("div");
-            divTop.appendChild(divButton);
+            divTop.style.justifyContent = "center";
             this.divElement.appendChild(divTop);
-
-            this.sub = document.createElement("button");
-            this.sub.textContent = "-";
-            this.sub.addEventListener('click', () => {
-                this.input.stepDown();
-                updateRecapMessages();
-            });
-            divButton.appendChild(this.sub);
-
-            this.add = document.createElement("button");
-            this.add.textContent = "+";
-            this.add.addEventListener('click', () => {
-                this.input.stepUp();
-                updateRecapMessages();
-            });
-            divButton.appendChild(this.add);
 
             this.label = document.createElement("label");
             this.label.htmlFor = elementId;
             this.label.style.display = "flex";
             this.label.style.alignItems = "center";
             this.label.style.textAlign = "center";
-            this.label.style.gap = "0.5rem";
 
             divTop.appendChild(this.label);
 
             this.span = [];
-            if(Array.isArray(name))
-            {
+            if(Array.isArray(name)) {
+                this.label.style.display = "flex";
+                this.label.style.flexDirection = "row";
+                this.label.style.gap = "2rem";
+                this.label.classList.add("font_heavy");
+
                 for(let i = 0; i < name.length; i++)
                 {
+                    const labelDiv = document.createElement("div");
+                    this.label.appendChild(labelDiv);
+                    labelDiv.style.display = "flex";
+                    labelDiv.style.flexDirection = "column";
+
                     const span = document.createElement("span")
                     this.span.push(span);
                     span.id = name[i].toLowerCase()+i.toString();
-                    this.label.appendChild(document.createTextNode((i == 0 ? "" : " ") +name[i]+" "));
-                    this.label.appendChild(span);
+
+                    console.log(span.id);
+
+                    const textNode = document.createTextNode((i == 0 ? "" : " ") +name[i]+" ");
+                    labelDiv.appendChild(textNode);
+                    labelDiv.appendChild(span);
+
                 }
             }
-            else
-            {
+            else {
                 const span = document.createElement("span")
                 this.span.push(span);
                 span.id = name.toLowerCase();
                 this.label.appendChild(document.createTextNode(name+" "));
+                this.label.classList.add("font_heavy");
                 this.label.appendChild(span);
             }
+
+            const divButton = document.createElement("div");
+            this.divElement.appendChild(divButton);
+            divButton.style.display = "flex";
+            divButton.style.flexDirection = "row";
+            divButton.style.backgroundColor = "var(--clickable_light2)";
+            divButton.style.borderRadius = "10px";
+
+            this.sub = document.createElement("button");
+            this.sub.classList.add("font_heavy");
+            this.sub.classList.add("white_dark");
+            this.sub.style.margin = "0";
+            this.sub.style.borderTopLeftRadius = "10px";
+            this.sub.style.borderBottomLeftRadius = "10px";
+            this.sub.style.borderTopRightRadius = "0px";
+            this.sub.style.borderBottomRightRadius = "0px";
+
+            this.sub.textContent = "-";
+            this.sub.addEventListener('click', () => {
+                this.input.stepDown();
+                updateRecapMessages();
+            });
+            divButton.appendChild(this.sub);
+            this.add = document.createElement("button");
+            this.add.classList.add("font_heavy");
+            this.add.classList.add("white_dark");
+            this.add.style.margin = "0";
+            this.add.style.borderTopLeftRadius = "0px";
+            this.add.style.borderBottomLeftRadius = "0px";
+            this.add.style.borderTopRightRadius = "10px";
+            this.add.style.borderBottomRightRadius = "10px";
+            this.add.textContent = "+";
+
+            this.add.addEventListener('click', () => {
+                this.input.stepUp();
+                updateRecapMessages();
+            });
+
 
             this.input = document.createElement("input");
             this.input.min = min;
             this.input.max = max;
             this.input.type = "range";
+            this.input.className = "custom-slider";
             this.input.step = step.toString();
             this.input.value = initialValue.toString();
             this.input.style.width = '100%';
             this.input.style.margin = '0';
             this.input.addEventListener('input', updateRecapMessages);
-            this.divElement.appendChild(this.input);
+
+            divButton.appendChild(this.sub);
+            divButton.appendChild(this.input);
+            divButton.appendChild(this.add);
 
             main.appendChild(this.divElement);
         }
         getValue() {
-            return parseInt(this.input.value);
+            return Number(this.input.value);
         }
         setValue(value) {
             this.input.value = value;
@@ -747,48 +842,142 @@ document.addEventListener('DOMContentLoaded', function(){
             }
         }
     }
+    class InputSelect {
+
+        constructor(name, valueNames) {
+            this.divElement = document.createElement("div");
+            document.querySelector("main").appendChild(this.divElement);
+            this.divElement.style.display = "flex";
+            this.divElement.style.flexDirection = "row";
+            this.divElement.style.alignItems = "center";
+            this.divElement.classList.add("font_heavy");
+            this.divElement.classList.add("black_light");
+
+            this.text = document.createElement("p");
+            this.divElement.appendChild(this.text);
+            this.text.textContent = name;
+            this.text.style.width = "10rem";
+            this.text.classList.add("font_heavy");
+
+            this.select = document.createElement("select");
+            this.select.id = name.toLowerCase();
+            this.select.addEventListener("change", () => {
+                updateRecapMessages();
+            })
+            this.divElement.appendChild(this.select);
+            this.select.classList.add("font_heavy");
+            this.select.classList.add("white_dark");
+            this.select.style.width = `100%`;
+            this.select.style.marginRight = `0.5rem`;
+
+            for(let i = 0; i < valueNames.length; i++) {
+                const option = document.createElement("option");
+                option.textContent = valueNames[i];
+                option.value = i.toString();
+                option.classList.add("white_dark");
+                this.select.appendChild(option);
+            }
+        }
+
+        getValue() {
+            return Number(this.select.value);
+        }
+        setValue(value) {
+            this.select.value = value;
+            updateRecapMessages();
+        }
+        setValueText(value) {
+            //todo
+        }
+    }
 
     function createTexts() {
+
+        const div = document.createElement("div");
+        div.classList.add("black_light");
+        div.classList.add("font_big");
+        div.style.display = "flex";
+        div.style.flexDirection = "column";
+        div.style.alignItems = "center";
+        div.style.justifyContent = "center";
+        div.style.padding = "0";
+        div.style.marginTop = "2rem";
+        main.appendChild(div);
+
         const win_text = document.createElement("p");
         win_text.id = "win_text";
+        win_text.style.marginBottom = "0";
         const score_text = document.createElement("p");
         score_text.id = "score_text";
-        score_text.textContent = "Déplace les jauges pour obtenir un score.";
+        score_text.style.marginBottom = "0";
+        //score_text.style.marginTop = "0";
         const summary_text = document.createElement("p");
         summary_text.id = "summary_text";
+        //summary_text.style.marginTop = "0";
 
-        main.appendChild(win_text);
-        main.appendChild(score_text);
-        main.appendChild(summary_text);
+        div.appendChild(win_text);
+        div.appendChild(score_text);
+        div.appendChild(summary_text);
     }
 
     function createButton(id, text) {
+        let div = document.getElementById('bottom_buttons');
         const button = document.createElement("button")
         button.id = id;
-        button.style.marginRight = "0.5rem";
         button.textContent = text;
-        main.appendChild(button);
+        button.classList.add("font_big");
+        button.classList.add("white_orange");
+        button.style.width = "50%";
+        button.style.minHeight = "3rem";
+        div.appendChild(button);
+
+        return button;
     }
     
     function createRulesText() {
-        let div = document.createElement("div");
+
+        const div = document.createElement("div");
+
         div.id = "rules_text";
         div.style.margin = "0";
+        div.style.padding = "0";
         main.appendChild(div);
 
-        let p1 = document.createElement("p");
+        const divRulesTitle = document.createElement("div");
+        divRulesTitle.classList.add("white_dark");
+        divRulesTitle.classList.add("font_big");
+        divRulesTitle.style.display = "flex";
+        divRulesTitle.style.alignItems = "center";
+        divRulesTitle.addEventListener("click", (event) => {
+            //Rules text
+            event.currentTarget.parentNode.children[1].style.display = event.currentTarget.parentNode.children[1].style.display === "none" ? "block" : "none";
+            //Rules inputs
+            event.currentTarget.parentNode.children[2].style.display = event.currentTarget.parentNode.children[2].style.display === "none" ? "block" : "none";
+        });
+        div.appendChild(divRulesTitle);
+
+        const pRules = document.createElement("p");
+        pRules.textContent = "Règles";
+        pRules.style.marginLeft = "0.5rem";
+        divRulesTitle.appendChild(pRules);
+        const img = document.createElement("img");
+        img.src = "glass.png";
+        img.style.maxWidth = "1.5rem";
+        divRulesTitle.appendChild(img);
+
+        const p1 = document.createElement("p");
+        p1.classList.add("font_small");
         div.appendChild(p1);
         p1.innerHTML += "Le prenant ne peut appeler qu'à 5 joueurs.";
         p1.innerHTML += '</br>';
         p1.innerHTML += "Valeurs des contrats selon la FFT: 25, 50, 100, 150.";
         p1.innerHTML += '</br>';
-        p1.innerHTML += 'Une "annonce" est définie comme un pseudo contrat supplémentaire qui doit être annoncé au cours du premier tour.';
+        p1.innerHTML += 'Une "annonce" est définie comme un pseudo contrat supplémentaire qui doit être annoncé au cours de la première volée.';
         p1.innerHTML += '</br>';
-        p1.innerHTML += "Une annonce n'affecte pas les coéquipiers de l'annonceur, uniquement les adervsaires et l'annonceur.";
+        p1.innerHTML += "Une annonce n'affecte pas les coéquipiers de l'annonceur, uniquement les adversaires et l'annonceur.";
         p1.innerHTML += '</br>';
-        p1.innerHTML += "La valeur d'une poignée est comptée comme 'valeur de la poignée' x 'nombre d'aversaires'.";
-        p1.innerHTML += '</br>';
-        p1.innerHTML += "Pour les poignées, il couviendra de montrer le nombre d'atouts corresdpondant à la poignée avavnt que l'annonceur ne joue sa première carte. ";
+        p1.innerHTML += "La valeur d'une poignée est comptée comme 'valeur de la poignée' x 'nombre d'adversaires'. ";
+        p1.innerHTML += "Pour les poignées, il conviendra de montrer le nombre d'atouts correspondant à la poignée avant que l'annonceur ne joue sa première carte. ";
         p1.innerHTML += "L'excuse ne peut être montrée pour la poignée que si l'annonceur n'a pas d'autre atout à montrer. ";
         p1.innerHTML += "Le nombre d'atouts nécessaires pour annoncer des poignées change en fonction du nombre de joueurs et des règles appliquées, à vous de choisir.";
         p1.innerHTML += '</br>';
@@ -804,20 +993,38 @@ document.addEventListener('DOMContentLoaded', function(){
         p1.innerHTML += '</br>';
         p1.innerHTML += "Un Chelem n'affecte pas les coéquipiers de l'annonceur.";
         p1.innerHTML += '</br>';
-        p1.innerHTML += "Toutes la valeurs décrites sont arrondies en fonction du nombre de joueurs et de la situation.";
+        p1.innerHTML += "Toutes les valeurs décrites sont arrondies en fonction du nombre de joueurs et de la situation.";
         p1.innerHTML += '</br>';
         p1.innerHTML += "Les règles présentées sont vouées à être modifiées.";
+
+        const factorsInputs = createCustomRulesInputs(div);
+        document.getElementById('contract_factors').addEventListener('click', updateRecapMessages);
+
+        document.getElementById('mise_value').addEventListener('change', updateRecapMessages);
     }
 
-    function createCustomRulesInputs() {
+    function createCustomRulesInputs(parentNode) {
 
         const div = document.createElement("div");
-        document.querySelector("main").appendChild(div);
+        div.style.margin = "0";
+        parentNode.appendChild(div);
 
+        // Mise
+        const divMise  = document.createElement("div");
+        divMise.style.display = "flex";
+        divMise.style.flexDirection = "row";
+        divMise.style.gap = "0.5rem";
+        div.appendChild(divMise);
+        const pMise = document.createElement("p");
+        divMise.appendChild(pMise);
+        pMise.textContent = "La mise vaut";
+        pMise.style.margin = "0";
+        const miseValue = new NumberInput('mise_value', 1, 999, 1, 50, divMise);
+
+        //Facteurs
         const p = document.createElement("p");
         div.appendChild(p);
-        p.style.margin = "0";
-        p.textContent = "Facteur des contrats (la valeur de la mise est 25)";
+        p.textContent = "Facteur des contrats :";
 
         const divInputs = document.createElement("div");
         div.appendChild(divInputs);
@@ -833,7 +1040,7 @@ document.addEventListener('DOMContentLoaded', function(){
             nDiv.style.display = "flex";
             nDiv.style.flexDirection = "column";
             nDiv.style.textAlign = "center";
-            nDiv.style.width = "100px";
+            nDiv.style.width = "100%";
 
             const p = document.createElement("p");
             p.style.margin = "0";
@@ -842,13 +1049,13 @@ document.addEventListener('DOMContentLoaded', function(){
         }
 
         divInputLabel[0].children[0].textContent = "Petite/Pousse"
-        const takeFacInput = new NumberInput('take_fac', 1, 10, 1, 1, divInputLabel[0]);
+        const takeFacInput = new NumberInput('take_fac', 1, 99, 1, 1, divInputLabel[0]);
         divInputLabel[1].children[0].textContent = "Garde"
-        const GuardFacInput = new NumberInput('guard_fac', 1, 10, 1, 2, divInputLabel[1]);
+        const GuardFacInput = new NumberInput('guard_fac', 1, 99, 1, 2, divInputLabel[1]);
         divInputLabel[2].children[0].textContent = "Garde sans"
-        const GuardWFacInput = new NumberInput('guard_without_fac', 1, 10, 1, 4, divInputLabel[2]);
+        const GuardWFacInput = new NumberInput('guard_without_fac', 1, 99, 1, 4, divInputLabel[2]);
         divInputLabel[3].children[0].textContent = "Garde contre"
-        const GuardAFacInput = new NumberInput('guard_against_fac', 1, 10, 1, 6, divInputLabel[3]);
+        const GuardAFacInput = new NumberInput('guard_against_fac', 1, 99, 1, 6, divInputLabel[3]);
 
         return [takeFacInput, GuardFacInput, GuardWFacInput, GuardAFacInput];
     }
@@ -858,47 +1065,54 @@ document.addEventListener('DOMContentLoaded', function(){
     const scoreboard = new Scoreboard();
     const announcements = new AnnouncementManager();
 
+    let miseValue = 25;
     const contractFactor = [1, 2, 4, 6];
-    const contractSlider = new Slider('contract_slider','Contrat', 0, 3, 1, 0);
-    const oudlerSlider = new Slider('oudler_slider', 'Bouts', 0, 3, 1, 0);
-    const scoreSlider = new Slider('score_slider', ["Attaque", "Défense"], 0, 91, 1, 0);
+
+    const contractSelect = new InputSelect("Contrat", ["Petite","Garde","Garde Sans","Garde Contre"]);
+    contractSelect.divElement.style.marginTop = "2rem";
+    const oudlerSelect = new InputSelect("Bouts", ["0","1","2","3"]);
+    const scoreSlider = new Slider('score_slider', ["⚔️Attaque", "🛡️Défense"],0, 91, 1, 0);
+    scoreSlider.divElement.style.marginBottom = "2rem";
 
     chelem.init(scoreboard);
     theOne.init(scoreboard);
 
-    createTexts();
+    //
+    const bottomDiv = document.createElement('div');
+    bottomDiv.id = 'bottom_buttons';
+    bottomDiv.classList.add("black_light");
+    bottomDiv.style.display = "flex";
+    bottomDiv.style.flexDirection = "row";
+    bottomDiv.style.justifyContent = "center";
+    bottomDiv.style.marginTop = "2rem";
+    main.appendChild(bottomDiv);
     
-    createButton("add_points", "Appliquer les points");
-    createButton("reset_points", "Repartir de 0");
+    createButton("add_points", "✅ Valider").style.flex = "1";
+    createButton("reset_points", "🔄 Nouvelle").style.flex = "0.5";
+
+    createTexts();
 
     createRulesText();
-
-    const factorsInputs = createCustomRulesInputs();
-    document.getElementById('contract_factors').addEventListener('click', function() {
-        for(let i = 0; i < factorsInputs.length; i++) {
-            contractFactor[i] = factorsInputs[i].getValue();
-        }
-    })
 
     const winText = document.getElementById("win_text");
     const scoreText = document.getElementById('score_text');
     const summaryText = document.getElementById('summary_text');
 
-    for(let i = 0; i < 5; i++) {
-        let nPlayer = new Player("Joueur"+(i+1));
-        scoreboard.addPlayer(nPlayer);
-        announcements.addPlayer(nPlayer);
-        chelem.buildChelemPlayerSelect();
-        theOne.buildTheOneSelect();
-    }
+    // for(let i = 0; i < 5; i++) {
+    //     let nPlayer = new Player("Joueur"+(i+1));
+    //     scoreboard.addPlayer(nPlayer);
+    //     announcements.addPlayer(nPlayer);
+    //     chelem.buildChelemPlayerSelect();
+    //     theOne.buildTheOneSelect();
+    // }
 
-    contractSlider.setValue(0)
-    oudlerSlider.setValue(0);
+    contractSelect.setValue(0)
+    oudlerSelect.setValue(0);
     scoreSlider.setValue(0);
     updateRecapMessages();
 
     function hasAttackWin() {
-        let oudlerCount = oudlerSlider.getValue();
+        let oudlerCount = oudlerSelect.getValue();
         let cardScore = scoreSlider.getValue();
         if(oudlerCount === 0 && cardScore >= 56) {
             return true;
@@ -925,11 +1139,24 @@ document.addEventListener('DOMContentLoaded', function(){
         return false;
     }
 
+    function updateFactors() {
+        const divFactors = document.getElementById("contract_factors");
+        for(let i = 0; i < divFactors.children.length; i++) {
+            const divFac = divFactors.children[i];
+            contractFactor[i] = Number(divFac.children[1].value);
+        }
+
+    }
+    function updateMiseValue() {
+        const miseInput = document.getElementById("mise_value");
+        if(miseInput)
+            miseValue = Number(miseInput.value);
+    }
     function getRoundScore() {
         return scoreSlider.getValue();
     }
     function getTargetScoreForAttacker() {
-        switch (oudlerSlider.getValue()) {
+        switch (oudlerSelect.getValue()) {
             case 0:
                 return 56;
             case 1:
@@ -947,12 +1174,14 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     function getContractValue() {
-        let contractIndex = contractSlider.getValue();
+        let contractIndex = contractSelect.getValue();
         const diff = getDiffTargetScore();
+        updateFactors();
+        updateMiseValue();
         if(diff > 0)
-            return (diff + 25) * contractFactor[contractIndex];
+            return (diff + miseValue) * contractFactor[contractIndex];
         else
-            return (diff - 25) * contractFactor[contractIndex];
+            return (diff - miseValue) * contractFactor[contractIndex];
     }
 
     function addContractToPlayer(team, scores, contractValue) {
@@ -1077,33 +1306,15 @@ document.addEventListener('DOMContentLoaded', function(){
         chelem.applyChelemPoints(teams, scores);
 
         // petit
-        theOne.applyTheOne(teams, scores, contractFactor[contractSlider.getValue()]);
+        updateFactors();
+        theOne.applyTheOne(teams, scores, contractFactor[contractSelect.getValue()]);
 
         return [teams, scores];
     }
 
     // text and slider
     function updateSliderTextValues() {
-
-        oudlerSlider.setValueText(oudlerSlider.getValue())
         scoreSlider.setValueText([scoreSlider.getValue(), 91 - scoreSlider.getValue()]);
-
-        switch (contractSlider.getValue()) {
-            case 0:
-                contractSlider.setValueText("Petite");
-                break;
-            case 1:
-                contractSlider.setValueText("Garde");
-                break;
-            case 2:
-                contractSlider.setValueText("Garde Sans");
-                break;
-            case 3:
-                contractSlider.setValueText("Garde Contre");
-                break;
-            default:
-                contractSlider.setValueText("");
-        }
     }
 
     function updateRecapMessages() {
@@ -1128,18 +1339,27 @@ document.addEventListener('DOMContentLoaded', function(){
 
         if (hasAttackWin()) {
             winText.textContent = "Victoire de l'attaque.";
-            scoreText.textContent = "Score de " + scoreSlider.getValue() + " pour " + oudlerSlider.getValue() + " bouts.";
+            scoreText.textContent = "Score de " + scoreSlider.getValue() + " pour " + oudlerSelect.getValue() + " bouts.";
             summaryText.textContent = "Points pour le preneur : " + attackerScore;
+            const atkSpan = document.getElementById("⚔️attaque0");
+            atkSpan.style.color = "green";
+            const defSpan = document.getElementById("🛡️défense1");
+            defSpan.style.color = "#9c2424";
+
         } else {
             winText.textContent = "Victoire de la défense.";
-            scoreText.textContent =  "Score de " + scoreSlider.getValue() + " pour " + oudlerSlider.getValue() + " bouts.";
+            scoreText.textContent =  "Score de " + scoreSlider.getValue() + " pour " + oudlerSelect.getValue() + " bouts.";
             summaryText.textContent = "Points pour le preneur : " + attackerScore;
+            const atkSpan = document.getElementById("⚔️attaque0");
+            atkSpan.style.color = "#9c2424";
+            const defSpan = document.getElementById("🛡️défense1");
+            defSpan.style.color = "green";
         }
     }
 
     function resetSliders() {
-        contractSlider.setValue(0);
-        oudlerSlider.setValue(0);
+        contractSelect.setValue(0);
+        oudlerSelect.setValue(0);
         scoreSlider.setValue(0);
         announcements.resetValues()
 
@@ -1148,9 +1368,6 @@ document.addEventListener('DOMContentLoaded', function(){
         })
 
         updateRecapMessages();
-
-        winText.textContent = "";
-        scoreText.textContent = "Déplace les jauges pour obtenir un score.";
     }
 
     //Add points
@@ -1183,9 +1400,13 @@ document.addEventListener('DOMContentLoaded', function(){
     });
 
     document.getElementById('reset_points').addEventListener('click', function() {
+        const res = confirm("Êtes-vous sûr de vouloir recommencer ?");
+
+        if (res.valueOf() === false)
+            return;
+
         for(let p of scoreboard.players)
             p.resetScore();
-        
         resetSliders();
     });
 })

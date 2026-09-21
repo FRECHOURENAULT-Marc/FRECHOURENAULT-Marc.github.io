@@ -1,3 +1,59 @@
+:root {
+    --clickable_dark: #5c5c5c;
+    --clickable_light2: #c7c7c7;
+    --clickable_light: #f2f2f2;
+
+    --border_radius: 4px;
+
+
+    --orange: #eb5e28;
+    --slider-height: 10px;
+}
+
+.white_dark {
+    color: white;
+    background-color: var(--clickable_dark);
+    border : none;
+    border-radius: var(--border_radius);
+}
+.white_orange {
+    color: white;
+    background-color: var(--orange);
+    border : none;
+    border-radius: var(--border_radius);
+}
+.black_light {
+    color: black;
+    background-color: var(--clickable_light);
+    border : none;
+    border-radius: var(--border_radius);
+}
+
+.font_heavy {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+.font_large {
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+.font_big {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+.font_medium {
+    font-weight: bold;
+    font-size: 1rem;
+}
+.font_small {
+    font-size: 13px;
+}
+
+body {
+    color: black;
+    font-family: arial, sans-serif;
+}
+
 div {
     margin: 0.5rem;
 }
@@ -6,9 +62,7 @@ button {
     min-width: 3rem;
     min-height: 2rem;
 }
-input {
-    margin: 0.5rem;
-}
+
 select {
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
@@ -18,6 +72,12 @@ select {
 option {
     margin: 0.5rem;
 }
+li {
+    margin: 0.5rem;
+    min-width: 3rem;
+    min-height: 2rem;
+}
+
 p {
     margin: 0.5rem;
     padding: 0;

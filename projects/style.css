@@ -1,0 +1,100 @@
+:root {
+
+    --dark: #5c5c5c;
+
+    --light-darker: #c7c7c7;
+    --light: #f2f2f2;
+
+    --orange: #eb5e28;
+}
+
+body {
+    padding: 0;
+    font-family: arial, sans-serif;
+}
+
+#app_list {
+    display: flex;
+    flex-direction: column;
+
+    margin: 0.5rem;
+}
+
+.ProjectCategory {
+    /*Colors*/
+    background-color: var(--light);
+
+    /*Bounds*/
+    border-radius: 10px;
+
+    /*Container*/
+    display: inherit;
+    flex-direction: inherit;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+
+}
+.ProjectCategoryName {
+    /*Colors*/
+    color: black;
+
+    font-size: 1rem;
+    font-weight: bold;
+
+    /*Container*/
+    display: inherit;
+    flex-direction: inherit;
+    padding-top: 1rem;
+    padding-left: 1rem;
+
+}
+.ProjectCategoryButtons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    padding: 1rem;
+    --gap : 1rem;
+    --lineItem : 2;
+    gap: var(--gap);
+    row-gap: calc(var(--gap) / 1.5);
+}
+
+.ProjectButton {
+    /*Colors*/
+    background-color: var(--orange);
+    border: none;
+    border-radius: 10px;
+    color: white;
+
+    font-weight: bold;
+    font-size: 1.5rem;
+
+    /*Bounds*/
+    --gapPerLine : calc(var(--lineItem) - 1);
+    --widthLine : calc(100% - (var(--gapPerLine) * var(--gap)));
+    --width : calc(var(--widthLine) / var(--lineItem));
+    width: var(--width);
+    height: 6rem;
+
+    /*Container*/
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.LogoSmall
+{
+    max-width: 5rem;
+    max-height: 5rem;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+p {
+    margin: inherit;
+}
