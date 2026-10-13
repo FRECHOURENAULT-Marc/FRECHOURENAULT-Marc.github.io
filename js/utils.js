@@ -72,6 +72,8 @@ export function Download(file, name) {
   link.remove();
 }
 
+window.Download = Download;
+
 export class Box
 {
   link_div;
