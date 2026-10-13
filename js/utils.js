@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Download a file (path) and name the downloaded file
-function Download(file, name) {
+export function Download(file, name) {
   const link = document.createElement("a");
   link.href = file;
   link.download = name;
