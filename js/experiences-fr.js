@@ -10,11 +10,12 @@ document.addEventListener('DOMContentLoaded', () =>
   project_sdmis.AddDesc("");
   project_sdmis.AddDesc("J'ai été sur le terrain afin de participer à un entrainement NRBC-E grandeur nature");
   project_sdmis.AddDesc("avec les services d'intervention de la région");
-  project_sdmis.AddDesc("J'ai développé des systèmes sur Unity dans l'optique pour des mini jeux répondants aux besoins du SDMIS.");
+  project_sdmis.AddDesc("Grâce à cela j'ai pu répondre aux besoin du SDMIS en développant des systèmes pour les mini jeux de l'EAD sur Unity.");
   project_sdmis.AddDesc("J'ai pensé l'utilisation de la manière la plus instinctive possible afin de correspondre au public qui n'est pas initié au jeu vidéo.");
   project_sdmis.AddSkill("Unity 3D ");
   project_sdmis.AddSkill("C# et json");
   project_sdmis.AddSkill("Game Design");
+  project_sdmis.AddLink("https://sdmis.fr/", "Site du SDMIS Auvergne Rhone Alpes");
 
   //GAIA
   let project_gaia = new Project("DÉVELOPPEUR FULL STACK", "2025 (2mois)", "../img/gaia_74_illu.png", "fr");
