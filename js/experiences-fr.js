@@ -2,6 +2,20 @@ import { Box, Project } from './utils.js';
 
 document.addEventListener('DOMContentLoaded', () =>
 {
+  //SDMIS
+  let project_sdmis = new Project("DÉVELOPPEUR C# UNITY", "2026 (2mois)", "../img/sdmis_illu.png", "fr");
+  project_sdmis.SetID("sdmis");
+  project_sdmis.AddDesc("J'ai eu pour mission de développer un enseignement à distance gamifié");
+  project_sdmis.AddDesc("pour les différents services impliqués dans les missions de sécurité NRBC-E (attaque chimique).");
+  project_sdmis.AddDesc("");
+  project_sdmis.AddDesc("J'ai été sur le terrain afin de participer à un entrainement NRBC-E grandeur nature");
+  project_sdmis.AddDesc("avec les services d'intervention de la région");
+  project_sdmis.AddDesc("J'ai développé des systèmes sur Unity dans l'optique pour des mini jeux répondants aux besoins du SDMIS.");
+  project_sdmis.AddDesc("J'ai pensé l'utilisation de la manière la plus instinctive possible afin de correspondre au public qui n'est pas initié au jeu vidéo.");
+  project_sdmis.AddSkill("Unity 3D ");
+  project_sdmis.AddSkill("C# et json");
+  project_sdmis.AddSkill("Game Design");
+
   //GAIA
   let project_gaia = new Project("DÉVELOPPEUR FULL STACK", "2025 (2mois)", "../img/gaia_74_illu.png", "fr");
   project_gaia.SetID("gaia");
