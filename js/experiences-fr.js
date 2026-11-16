@@ -2,17 +2,32 @@ import { Box, Project } from './utils.js';
 
 document.addEventListener('DOMContentLoaded', () =>
 {
+  //ANKAMA 2026
+  let project_ankama2026 = new Project("ASSISTANT TESTEUR", "2026 (1mois)", "../img/ankama2026_illu.png", "fr");
+  project_ankama2026.SetID("ankama2026");
+  project_ankama2026.AddDesc("Ma mission a été de tester les fonctionnalités et faire des retours sur un jeu en cours de développement", false);
+  project_ankama2026.AddDesc(" afin de le rendre prêt pour la publication.");
+  project_ankama2026.AddDesc("");
+  project_ankama2026.AddDesc("J'ai élaborer des protocoles de tests afin d'évaluer différents points critiques de manière efficace.");
+  project_ankama2026.AddDesc("Pour aider aux tests j'ai développé des outils permettant l'automatisation de certaines tâches.");
+  project_ankama2026.AddDesc("J'ai ainsi rédigé des rapports via Youtrack, un outil permettant d'ouvrir des tickets et d'y assigner des personnes.");
+  project_ankama2026.AddDesc("Ceci a été fait dans l'optique de leur transmettre mes retours (problèmes et/ou ressenti) de manière claire et détaillée.");
+  project_ankama2026.AddSkill("Communication");
+  project_ankama2026.AddSkill("Scripting C#");
+  project_ankama2026.AddSkill("YouTrack");
+  project_ankama2026.AddLink("https://www.ankama.com/fr", "Site de Ankama");
+
   //SDMIS
   let project_sdmis = new Project("DÉVELOPPEUR C# UNITY", "2026 (2mois)", "../img/sdmis_illu.png", "fr");
   project_sdmis.SetID("sdmis");
-  project_sdmis.AddDesc("J'ai eu pour mission de développer un enseignement à distance gamifié");
+  project_sdmis.AddDesc("J'ai eu pour mission de développer un enseignement à distance gamifié", false);
   project_sdmis.AddDesc("pour les différents services impliqués dans les missions de sécurité NRBC-E (attaque chimique).");
   project_sdmis.AddDesc("");
   project_sdmis.AddDesc("J'ai été sur le terrain afin de participer à un entrainement NRBC-E grandeur nature", false);
   project_sdmis.AddDesc("avec les services d'intervention de la région.");
   project_sdmis.AddDesc("Grâce à cela j'ai pu répondre aux besoin du SDMIS en développant des systèmes pour les mini jeux de l'EAD sur Unity.");
   project_sdmis.AddDesc("J'ai pensé l'expérience utilisateur de la manière la plus instinctive possible afin de correspondre au public qui n'est pas initié au jeu vidéo.");
-  project_sdmis.AddSkill("Unity 3D ");
+  project_sdmis.AddSkill("Unity 3D");
   project_sdmis.AddSkill("C# et json");
   project_sdmis.AddSkill("Game Design");
   project_sdmis.AddLink("https://sdmis.fr/", "Site du SDMIS Auvergne Rhone Alpes");
