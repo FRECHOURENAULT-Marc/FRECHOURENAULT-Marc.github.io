@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () =>
   project_sdmis.AddDesc("J'ai eu pour mission de développer un enseignement à distance gamifié", false);
   project_sdmis.AddDesc("pour les différents services impliqués dans les missions de sécurité NRBC-E (attaque chimique).");
   project_sdmis.AddDesc("");
-  project_sdmis.AddDesc("J'ai été sur le terrain afin de participer à un entrainement NRBC-E grandeur nature", false);
+  project_sdmis.AddDesc("J'ai été sur le terrain afin de participer à un entrainement NRBC-E grandeur nature ", false);
   project_sdmis.AddDesc("avec les services d'intervention de la région.");
   project_sdmis.AddDesc("Grâce à cela j'ai pu répondre aux besoin du SDMIS en développant des systèmes pour les mini jeux de l'EAD sur Unity.");
   project_sdmis.AddDesc("J'ai pensé l'expérience utilisateur de la manière la plus instinctive possible afin de correspondre au public qui n'est pas initié au jeu vidéo.");
